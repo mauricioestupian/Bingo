@@ -1,3 +1,8 @@
+body {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
 #root {
   margin: 0 auto;
   padding: 2rem;
@@ -15,32 +20,6 @@
 }
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-.App {
-  text-align: center;
-  font-family: sans-serif;
-  margin: 20px;
-}
-
-.board {
-  display: grid;
-  grid-template-columns: repeat(15, 40px);
-  gap: 5px;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.cell {
-  width: 40px;
-  height: 40px;
-  border: 1px solid #999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f0f0f0;
-  font-weight: bold;
-  cursor: pointer;
 }
 
 .marked {
@@ -82,11 +61,6 @@
 .read-the-docs {
   color: #888;
 }
-.App {
-  text-align: center;
-  font-family: sans-serif;
-  margin: 20px;
-}
 
 .buttons button {
   margin: 10px;
@@ -96,14 +70,44 @@
 
 .board {
   display: grid;
+  display: flex;
   grid-template-columns: repeat(15, 50px);
   gap: 6px;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin-top: 20px;
+  background-color: #1e1e1e;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #450561, #2b47e5);
+  border: 3px solid #ff00ff;
+  border-radius: 12px;
+  animation: neonRainbow 4s infinite;
 }
 
-.num {
-  font-size: 18px;
+@keyframes neonRainbow {
+  0% {
+    box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+    border-color: #ff00ff;
+  }
+  25% {
+    box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+    border-color: #00ffff;
+  }
+  50% {
+    box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+    border-color: #00ff00;
+  }
+  75% {
+    box-shadow: 0 0 10px #ffff00, 0 0 20px #ffff00;
+    border-color: #ffff00;
+  }
+  100% {
+    box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+    border-color: #ff0000;
+  }
 }
 
 .bingo-ball {
@@ -134,13 +138,6 @@
   }
 }
 
-.board {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-}
-
 .row {
   display: flex;
   margin-bottom: 4px;
@@ -151,13 +148,15 @@
   height: 70px;
   border: 2px solid #999;
   border-radius: 8px;
-  background-color: #e65ae6;
   font-weight: bold;
   font-size: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-right: 4px;
+  cursor: pointer;
+  background-color: #604f5d;
+  color: #fff;
 }
 
 .marked {
@@ -166,11 +165,30 @@
 }
 
 .header-cell {
-  background-color: #2196f3;
+  background-color: #3949ab;
   color: white;
 }
+
 p {
   font-size: 2rem;
   margin: 10px 0;
   color: #d32f2f;
+}
+
+.bingo-ball {
+  animation: bounceIn 0.6s ease-out;
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.5) translateY(-100px);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2) translateY(10px);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
 }
