@@ -254,4 +254,15 @@ p {
     justify-content: center;
     align-items: center;
   }
+
+  .cell {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+  }
+
+  .bingo-ball {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
 }
