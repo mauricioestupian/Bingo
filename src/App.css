@@ -22,10 +22,10 @@ body {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-.marked {
+/*.marked {
   background-color: #4caf50;
   color: white;
-}
+}*/
 
 .last-number {
   font-size: 24px;
@@ -170,7 +170,7 @@ body {
   justify-content: center;
   align-items: center;
   margin-right: 4px;
-  cursor: pointer;
+  cursor: no-drop;
   background-color: #604f5d;
   color: #fff;
 }

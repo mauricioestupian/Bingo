@@ -164,7 +164,7 @@ function Board({ calledNumbers, setCalledNumbers }) {
               <div
                 key={num}
                 className={`cell ${marked ? "marked" : ""}`}
-                onClick={() => toggleNumber(num)}
+                /*onClick={() => toggleNumber(num)}*/
               >
                 {num}
               </div>
