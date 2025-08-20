@@ -76,18 +76,17 @@ function App() {
         <div className="img-container">
           <img src="/titulo.png" className="title-image" />
         </div>
-        <div>
+        <div className="BingoBallContainer">
           <BingoBall value={lastNumber} />
         </div>
-      </div>
-      <div className="buttons">
-        <Button variant="success" onClick={singNumber}>
-          Cantar número
-        </Button>
-
-        <Button variant="outline-danger" onClick={resetBoard}>
-          Reiniciar tablero
-        </Button>
+        <div className="buttons">
+          <Button variant="success" onClick={singNumber}>
+            Cantar número
+          </Button>
+          <Button variant="outline-danger" onClick={resetBoard}>
+            Reiniciar tablero
+          </Button>
+        </div>
       </div>
       <Board
         calledNumbers={calledNumbers}
