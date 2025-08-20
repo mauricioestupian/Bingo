@@ -71,55 +71,58 @@ function App() {
 
   return (
     <Container>
-      <div className="App">
-        <img src="/titulo.png" className="title-image" />
-
-        <BingoBall value={lastNumber} />
-
-        <div className="buttons">
-          <Button variant="success" onClick={singNumber}>
-            Cantar número
-          </Button>
-
-          <Button variant="outline-danger" onClick={resetBoard}>
-            Reiniciar tablero
-          </Button>
+      <div className="grid-container">
+        <div></div>
+        <div className="img-container">
+          <img src="/titulo.png" className="title-image" />
         </div>
-        <Board
-          calledNumbers={calledNumbers}
-          setCalledNumbers={setCalledNumbers}
-        />
         <div>
-          <Row className="justify-content-md-center">
-            <Col xs lg="3">
-              <InputGroup className="mb-3">
-                <InputGroup.Text># Cartones</InputGroup.Text>
-                <Form.Control
-                  aria-label="First name"
-                  type="number"
-                  value={valor1}
-                  onChange={handleChange1}
-                />
-              </InputGroup>
-            </Col>
-            <Col md="auto">
-              <p>
-                Total: <strong>{resultado}</strong>
-              </p>
-            </Col>
-            <Col xs lg="3">
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Valor Apostado</InputGroup.Text>
-                <Form.Control
-                  type="number"
-                  aria-label="First name"
-                  value={valor2}
-                  onChange={handleChange2}
-                />
-              </InputGroup>
-            </Col>
-          </Row>
+          <BingoBall value={lastNumber} />
         </div>
+      </div>
+      <div className="buttons">
+        <Button variant="success" onClick={singNumber}>
+          Cantar número
+        </Button>
+
+        <Button variant="outline-danger" onClick={resetBoard}>
+          Reiniciar tablero
+        </Button>
+      </div>
+      <Board
+        calledNumbers={calledNumbers}
+        setCalledNumbers={setCalledNumbers}
+      />
+      <div>
+        <Row className="justify-content-md-center">
+          <Col xs lg="3">
+            <InputGroup className="mb-3">
+              <InputGroup.Text># Cartones</InputGroup.Text>
+              <Form.Control
+                aria-label="First name"
+                type="number"
+                value={valor1}
+                onChange={handleChange1}
+              />
+            </InputGroup>
+          </Col>
+          <Col md="auto">
+            <p>
+              Total: <strong>{resultado}</strong>
+            </p>
+          </Col>
+          <Col xs lg="3">
+            <InputGroup className="mb-3">
+              <InputGroup.Text>Valor Apostado</InputGroup.Text>
+              <Form.Control
+                type="number"
+                aria-label="First name"
+                value={valor2}
+                onChange={handleChange2}
+              />
+            </InputGroup>
+          </Col>
+        </Row>
       </div>
     </Container>
   );

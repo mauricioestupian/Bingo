@@ -85,6 +85,7 @@ body {
   border: 3px solid #ff00ff;
   border-radius: 12px;
   animation: neonRainbow 4s infinite;
+  margin-bottom: 1.5rem;
 }
 
 @keyframes neonRainbow {
@@ -144,12 +145,12 @@ body {
 }
 
 .cell {
-  width: 70px;
-  height: 70px;
+  width: 75px;
+  height: 75px;
   border: 2px solid #999;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 24px;
+  font-size: 28px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -190,5 +191,35 @@ p {
   }
   100% {
     transform: scale(1) translateY(0);
+  }
+}
+
+.img-container {
+  width: auto;
+  height: 200px; /* Ajusta la altura según sea necesario */
+  overflow: hidden;
+}
+
+.img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Opciones: cover, contain, fill, none, scale-down */
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 60% 2fr; /* 3 columnas iguales */
+  gap: 1rem;
+}
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr; /* 2 columnas */
+    grid-template-rows: auto auto; /* 2 filas */
+    gap: 0px;
+  }
+
+  .img-container {
+    width: 100%;
+    height: auto; /* Ajusta la altura automáticamente */
   }
 }
