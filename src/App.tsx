@@ -10,12 +10,12 @@ import "./App.css";
 import Modal from './components/Modal';
 import { BingoCard, bingoCards } from './data/bingoCards';
 import "./img/titulo.png";
-import { getWinningFigure, markNumberOnCards } from './logic/bingoValidation';
+import { getWinningFigure, markNumberOnCards, WinPleno } from './logic/bingoValidation';
 
 
 const TOTAL_NUMBERS = 75;
 
-function getBingoLetter(number) {
+function getBingoLetter(number:number) {
   if (number >= 1 && number <= 15) return "B";
   if (number >= 16 && number <= 30) return "I";
   if (number >= 31 && number <= 45) return "N";
@@ -29,9 +29,19 @@ function App() {
   const [cards, setCards] = useState<BingoCard[]>(() => [...bingoCards]);
   const [modalMessage, setModalMessage] = useState<string | null>(null);
   const [inputId, setInputId] = useState<string>("");
-  const [selectedCard, setSelectedCard] = useState<BingoCard | undefined>(undefined);
-  
+  const [selectedCard, setSelectedCard] = useState<BingoCard | null>(null);
 
+  const [valor1, setValor1] = useState("");
+  const [valor2, setValor2] = useState("");
+
+  const handleChange1 = (e) => setValor1(e.target.value);
+  const handleChange2 = (e) => setValor2(e.target.value);
+
+  const resultado = (parseFloat(valor1) || 0) * (parseFloat(valor2) || 0);
+
+  const [calledNumbers, setCalledNumbers] = useState(new Set());
+  //const [lastNumber, setLastNumber] = useState<number | null>(null);
+  const [lastNumber, setLastNumber] = useState<string | number | null>(null);
 
 
 // ✅ Función flecha que genera un número aleatorio no repetido
@@ -73,8 +83,7 @@ const singNumber = () => {
     // Guardar en historial
     setPlayedNumbers(prev => [...prev, random]);
 
-  };
-  
+};  
   
   function validateFigures() {
     const results: string[] = [];
@@ -98,7 +107,7 @@ const singNumber = () => {
 
   if (!card) {
     setModalMessage(`❌ No se encontró el cartón con ID ${cardId}`);
-    setSelectedCard(undefined);
+    setSelectedCard(null);
     return;
   }
 
@@ -110,24 +119,54 @@ const singNumber = () => {
     setModalMessage(`El cartón ${cardId} no ha completado ninguna figura aún.`);
   }
 
-    setSelectedCard(card);
-    setSelectedCard(undefined);
+  setSelectedCard(card);
+
+  }
+
+  function validarPleno(cardId: string) {
+  const card = cards.find(c => c.id === cardId);
+
+  if (!card) {
+    setModalMessage(`❌ No se encontró el cartón con ID ${cardId}`);
+    setSelectedCard(null);
+    return;
+  }
+
+  const figure = WinPleno(card);
+
+  if (figure) {
+    setModalMessage(`🎉 El cartón ${cardId} ha completado: ${figure}`);
+  } else {
+    setModalMessage(`El cartón ${cardId} no ha completado pleno aún.`);
+  }
+
+  setSelectedCard(card);
+
+  }
+  
+  function resetGame() {
+  // Restaurar cartones originales sin marcas
+  const freshCards = bingoCards.map(card => ({
+    ...card,
+    grid: card.grid.map(row =>
+      row.map(cell => ({ ...cell, marked: false }))
+    )
+  }));
+
+  setCards(freshCards);
+  setPlayedNumbers([]);
+  setModalMessage(null);
+  setSelectedCard(null);
+  // Si usas singNumber como estado:
+  // setSingNumber(null);
 }
   
-  const [valor1, setValor1] = useState("");
-  const [valor2, setValor2] = useState("");
-
-  const handleChange1 = (e) => setValor1(e.target.value);
-  const handleChange2 = (e) => setValor2(e.target.value);
-
-  const resultado = (parseFloat(valor1) || 0) * (parseFloat(valor2) || 0);
-
-  const [calledNumbers, setCalledNumbers] = useState(new Set());
-  const [lastNumber, setLastNumber] = useState(null);
+  
 
   const resetBoard = () => {
     setCalledNumbers(new Set());
     setLastNumber(null);
+    resetGame()
   };
 
   
@@ -155,8 +194,11 @@ const singNumber = () => {
               value={inputId}
               onChange={e => setInputId(e.target.value)}
             />
-            <Button onClick={() => validarCarton(inputId)}>
-            Validar Bingo
+            <Button onClick={() => validarCarton(inputId)} variant="outline-light">
+            Validar Figura
+            </Button>
+            <Button onClick={() => validarPleno(inputId)} variant="outline-light">
+            Validar Pleno
             </Button>
           </div>
         </div>

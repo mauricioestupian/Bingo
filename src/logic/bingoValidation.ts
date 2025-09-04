@@ -36,17 +36,44 @@ export function cuatroesquinas(card: BingoCard): boolean {
   );
 }
 
+export function cabezaCola(card: BingoCard): boolean {
+  const g = card.grid;
+  return (
+    g[0][0].marked &&
+    g[0][1].marked &&
+    g[4][3].marked &&
+    g[4][4].marked
+  );
+}
+
+export function cabezaCola2(card: BingoCard): boolean {
+  const g = card.grid;
+  return (
+    g[0][3].marked &&
+    g[0][4].marked &&
+    g[4][0].marked &&
+    g[4][1].marked
+  );
+}
+
 export function pleno(card: BingoCard): boolean {
   return card.grid.every(row => row.every(cell => cell.marked));
 }
 
-export function getWinningFigure(card: BingoCard): string | null {
+export function WinPleno(card: BingoCard): string | null {
   if (pleno(card)) return "Cartón Pleno";
+  return null;
+}
+
+
+export function getWinningFigure(card: BingoCard): string | null {
   if (lineaHorizontal(card)) return "Línea horizontal";
   if (lineaVertical(card)) return "Línea vertical";
   if (diagonal1(card)) return "Diagonal principal";
   if (diagonal2(card)) return "Diagonal secundaria";
   if (cuatroesquinas(card)) return "Cuatro esquinas";
+  if (cabezaCola(card)) return "Cabeza y Cola";
+  if (cuatroesquinas(card)) return "Cabeza y Cola invertida";
   return null;
 }
 

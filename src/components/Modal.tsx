@@ -1,4 +1,3 @@
-// src/components/Modal.tsx
 import React from 'react';
 import { BingoCard } from '../data/bingoCards';
 import BingoCardView from './BingoCardView';
@@ -7,14 +6,18 @@ type ModalProps = {
   message: string;
   onClose: () => void;
   card?: BingoCard | null; // ✅ acepta null o undefined
-}
-const Modal: React.FC<ModalProps> = ({ message, onClose }) => {
+};
+
+const Modal: React.FC<ModalProps> = ({ message, onClose, card }) => {
   return (
     <div style={styles.overlay}>
       <div style={styles.modal}>
         <h2>Resultado de Bingo</h2>
         <p>{message}</p>
+
+        {/* ✅ Aquí usamos la prop correctamente */}
         {card && <BingoCardView card={card} />}
+
         <button onClick={onClose}>Cerrar</button>
       </div>
     </div>
