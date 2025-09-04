@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
+import { useState } from 'react';
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -7,7 +7,11 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
 import "./App.css";
+import Modal from './components/Modal';
+import { BingoCard, bingoCards } from './data/bingoCards';
 import "./img/titulo.png";
+import { getWinningFigure, markNumberOnCards } from './logic/bingoValidation';
+
 
 const TOTAL_NUMBERS = 75;
 
@@ -21,6 +25,36 @@ function getBingoLetter(number) {
 }
 
 function App() {
+  const [playedNumbers, setPlayedNumbers] = useState<number[]>([]);
+  const [cards, setCards] = useState<BingoCard[]>(() => [...bingoCards]);
+  const [modalMessage, setModalMessage] = useState<string | null>(null);
+
+  function validateFigures() {
+    const results: string[] = [];
+
+    cards.forEach(card => {
+      const figure = getWinningFigure(card);
+      if (figure) {
+        results.push(`Cartón ${card.id} completó: ${figure}`);
+      }
+    });
+
+    if (results.length > 0) {
+      setModalMessage(results.join('\n'));
+    } else {
+      setModalMessage('Ningún cartón ha completado una figura aún.');
+    }
+  }
+  
+function playNumber(num: number) {
+  if (!playedNumbers.includes(num)) {
+    setPlayedNumbers(prev => [...prev, num]);
+    const updatedCards = markNumberOnCards(cards, num);
+    setCards(updatedCards);
+  }
+}
+
+
   const [valor1, setValor1] = useState("");
   const [valor2, setValor2] = useState("");
 
@@ -69,6 +103,16 @@ function App() {
     setLastNumber(null);
   };
 
+  function playCurrentNumber() {
+  if (singNumber !== null && !playedNumbers.includes(singNumber)) {
+    setPlayedNumbers(prev => [...prev, singNumber]);
+    const updatedCards = markNumberOnCards(cards, singNumber);
+    setCards(updatedCards);
+  }
+}
+
+
+
   return (
     <Container>
       <div className="grid-container">
@@ -85,6 +129,9 @@ function App() {
           </Button>
           <Button variant="outline-danger" onClick={resetBoard}>
             Reiniciar tablero
+          </Button>
+          <Button onClick={validateFigures}>
+            Validar figuras de bingo
           </Button>
         </div>
       </div>
@@ -123,7 +170,17 @@ function App() {
           </Col>
         </Row>
       </div>
+      <div>
+      <h1>Bingo</h1>
+      <button onClick={validateFigures}>Validar figuras</button>
+
+      {modalMessage && (
+        <Modal message={modalMessage} onClose={() => setModalMessage(null)} />
+      )}
+    </div>
+
     </Container>
+    
   );
 }
 
