@@ -30,13 +30,13 @@ export const bingoCards: BingoCard[] = [
     ]
   },
   {
-    id: "305",
+    id: "54",
     grid: [
-      [ { number: 4, marked: false }, { number: 20, marked: false }, { number: 32, marked: false }, { number: 47, marked: false }, { number: 62, marked: false } ],
-      [ { number: 8, marked: false }, { number: 23, marked: false }, { number: 35, marked: false }, { number: 48, marked: false }, { number: 63, marked: false } ],
-      [ { number: 9, marked: false }, { number: 15, marked: false }, { number: 0, marked: false },  { number: 55, marked: false }, { number: 66, marked: false } ],
-      [ { number: 14, marked: false }, { number: 24, marked: false }, { number: 37, marked: false }, { number: 56, marked: false }, { number: 71, marked: false } ],
-      [ { number: 19, marked: false }, { number: 27, marked: false }, { number: 42, marked: false }, { number: 57, marked: false }, { number: 73, marked: false } ]
+      [ { number: 12, marked: false }, { number: 21, marked: false }, { number: 32, marked: false }, { number: 50, marked: false }, { number: 71, marked: false } ],
+      [ { number: 6, marked: false }, { number: 23, marked: false }, { number: 37, marked: false }, { number: 58, marked: false }, { number: 73, marked: false } ],
+      [ { number: 5, marked: false }, { number: 18, marked: false }, { number: 0, marked: false },  { number: 57, marked: false }, { number: 70, marked: false } ],
+      [ { number: 15, marked: false }, { number: 25, marked: false }, { number: 43, marked: false }, { number: 55, marked: false }, { number: 65, marked: false } ],
+      [ { number: 3, marked: false }, { number: 17, marked: false }, { number: 35, marked: false }, { number: 59, marked: false }, { number: 74, marked: false } ]
     ]
   }
 ];

@@ -28,45 +28,14 @@ function App() {
   const [playedNumbers, setPlayedNumbers] = useState<number[]>([]);
   const [cards, setCards] = useState<BingoCard[]>(() => [...bingoCards]);
   const [modalMessage, setModalMessage] = useState<string | null>(null);
-
-  function validateFigures() {
-    const results: string[] = [];
-
-    cards.forEach(card => {
-      const figure = getWinningFigure(card);
-      if (figure) {
-        results.push(`Cartón ${card.id} completó: ${figure}`);
-      }
-    });
-
-    if (results.length > 0) {
-      setModalMessage(results.join('\n'));
-    } else {
-      setModalMessage('Ningún cartón ha completado una figura aún.');
-    }
-  }
+  const [inputId, setInputId] = useState<string>("");
+  const [selectedCard, setSelectedCard] = useState<BingoCard | undefined>(undefined);
   
-function playNumber(num: number) {
-  if (!playedNumbers.includes(num)) {
-    setPlayedNumbers(prev => [...prev, num]);
-    const updatedCards = markNumberOnCards(cards, num);
-    setCards(updatedCards);
-  }
-}
 
 
-  const [valor1, setValor1] = useState("");
-  const [valor2, setValor2] = useState("");
 
-  const handleChange1 = (e) => setValor1(e.target.value);
-  const handleChange2 = (e) => setValor2(e.target.value);
-
-  const resultado = (parseFloat(valor1) || 0) * (parseFloat(valor2) || 0);
-
-  const [calledNumbers, setCalledNumbers] = useState(new Set());
-  const [lastNumber, setLastNumber] = useState(null);
-
-  const singNumber = () => {
+// ✅ Función flecha que genera un número aleatorio no repetido
+const singNumber = () => {
     const remaining = Array.from(
       { length: TOTAL_NUMBERS },
       (_, i) => i + 1
@@ -96,23 +65,72 @@ function playNumber(num: number) {
     const utterance = new SpeechSynthesisUtterance(fullValue);
     utterance.lang = "es-ES";
     speechSynthesis.speak(utterance);*/
+  
+  // Marcar en cartones
+    const updatedCards = markNumberOnCards(cards, random);
+    setCards(updatedCards);
+
+    // Guardar en historial
+    setPlayedNumbers(prev => [...prev, random]);
+
   };
+  
+  
+  function validateFigures() {
+    const results: string[] = [];
+
+    cards.forEach(card => {
+      const figure = getWinningFigure(card);
+      if (figure) {
+        results.push(`Cartón ${card.id} completó: ${figure}`);
+      }
+    });
+
+    if (results.length > 0) {
+      setModalMessage(results.join('\n'));
+    } else {
+      setModalMessage('Ningún cartón ha completado una figura aún.');
+    }
+  }
+  
+  function validarCarton(cardId: string) {
+  const card = cards.find(c => c.id === cardId);
+
+  if (!card) {
+    setModalMessage(`❌ No se encontró el cartón con ID ${cardId}`);
+    setSelectedCard(undefined);
+    return;
+  }
+
+  const figure = getWinningFigure(card);
+
+  if (figure) {
+    setModalMessage(`🎉 El cartón ${cardId} ha completado la figura: ${figure}`);
+  } else {
+    setModalMessage(`El cartón ${cardId} no ha completado ninguna figura aún.`);
+  }
+
+    setSelectedCard(card);
+    setSelectedCard(undefined);
+}
+  
+  const [valor1, setValor1] = useState("");
+  const [valor2, setValor2] = useState("");
+
+  const handleChange1 = (e) => setValor1(e.target.value);
+  const handleChange2 = (e) => setValor2(e.target.value);
+
+  const resultado = (parseFloat(valor1) || 0) * (parseFloat(valor2) || 0);
+
+  const [calledNumbers, setCalledNumbers] = useState(new Set());
+  const [lastNumber, setLastNumber] = useState(null);
 
   const resetBoard = () => {
     setCalledNumbers(new Set());
     setLastNumber(null);
   };
 
-  function playCurrentNumber() {
-  if (singNumber !== null && !playedNumbers.includes(singNumber)) {
-    setPlayedNumbers(prev => [...prev, singNumber]);
-    const updatedCards = markNumberOnCards(cards, singNumber);
-    setCards(updatedCards);
-  }
-}
-
-
-
+  
   return (
     <Container>
       <div className="grid-container">
@@ -130,9 +148,17 @@ function playNumber(num: number) {
           <Button variant="outline-danger" onClick={resetBoard}>
             Reiniciar tablero
           </Button>
-          <Button onClick={validateFigures}>
-            Validar figuras de bingo
-          </Button>
+          <div>
+            <input
+              type="text"
+              placeholder="# cartón"
+              value={inputId}
+              onChange={e => setInputId(e.target.value)}
+            />
+            <Button onClick={() => validarCarton(inputId)}>
+            Validar Bingo
+            </Button>
+          </div>
         </div>
       </div>
       <Board
@@ -175,8 +201,16 @@ function playNumber(num: number) {
       <button onClick={validateFigures}>Validar figuras</button>
 
       {modalMessage && (
-        <Modal message={modalMessage} onClose={() => setModalMessage(null)} />
+        <Modal
+        message={modalMessage}
+        onClose={() => {
+          setModalMessage(null);
+          setSelectedCard(null);
+        }}
+        card={selectedCard}
+      />
       )}
+
     </div>
 
     </Container>
