@@ -77,7 +77,6 @@ export function figuraGanadora(card: Cartones): string | null {
   if (cuatroesquinas(card)) return "Cuatro esquinas";
   if (cabezaCola(card)) return "Cabeza y Cola";
   if (cabezaCola2(card)) return "Cabeza y Cola invertido";
-  if (cuatroesquinas(card)) return "Cabeza y Cola invertida";
   return null;
 }
 

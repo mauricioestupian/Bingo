@@ -6,6 +6,7 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
+import QRCode from "react-qr-code";
 import "./App.css";
 import Modal from './components/Modal';
 import { Cartones, cartones } from './data/Cartones';
@@ -42,6 +43,12 @@ function App() {
   const [calledNumbers, setCalledNumbers] = useState(new Set());
   //const [lastNumber, setLastNumber] = useState<number | null>(null);
   const [lastNumber, setLastNumber] = useState<string | number | null>(null);
+
+  const [showQR, setShowQR] = useState(false);
+  //https://bingo-eight-liart.vercel.app/
+  const cartonUrl = `https://bingo-eight-liart.vercel.app/carton`;
+  //const cartonUrl = `${window.location.origin}/carton`;
+  // Cambia esta URL por la de tu servidor si lo despliegas
 
 
 // ✅ Función flecha que genera un número aleatorio no repetido
@@ -254,6 +261,18 @@ const singNumber = () => {
       />
       )}
 
+      </div>
+       <div style={{ textAlign: "center", marginTop: "40px" }}>
+      <h1>Generador de Cartón de Bingo</h1>
+      <button onClick={() => setShowQR((prev) => !prev)}>
+        {showQR ? "Ocultar QR" : "Generar QR para un nuevo cartón"}
+      </button>
+      {showQR && (
+  <div style={{ margin: "30px auto" }}>
+    <QRCode value={cartonUrl} size={256} />
+    <p>Escanea este código QR en otro dispositivo para obtener un cartón nuevo.</p>
+  </div>
+)}
     </div>
 
     </Container>
