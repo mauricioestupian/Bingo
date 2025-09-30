@@ -48,7 +48,7 @@ function App() {
 
   const [showQR, setShowQR] = useState(false);
   //https://bingo-eight-liart.vercel.app/
-  const cartonUrl = `https://bingo-eight-liart.vercel.app/carton`;
+  const cartonUrl = `http://bingo-eight-liart.vercel.app/carton`;
   //const cartonUrl = `${window.location.origin}/carton`;
   // Cambia esta URL por la de tu servidor si lo despliegas
 
