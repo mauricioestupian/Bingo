@@ -1,10 +1,10 @@
-import { BingoCard } from '../data/bingoCards';
+import { Cartones } from '../data/Cartones';
 
-export function lineaHorizontal(card: BingoCard): boolean {
+export function lineaHorizontal(card: Cartones): boolean {
   return card.grid.some(row => row.every(cell => cell.marked));
 }
 
-export function lineaVertical(card: BingoCard): boolean {
+export function lineaVertical(card: Cartones): boolean {
   for (let col = 0; col < 5; col++) {
     let allMarked = true;
     for (let row = 0; row < 5; row++) {
@@ -18,15 +18,15 @@ export function lineaVertical(card: BingoCard): boolean {
   return false;
 }
 
-export function diagonal1(card: BingoCard): boolean {
+export function diagonal1(card: Cartones): boolean {
   return card.grid.every((row, i) => row[i].marked);
 }
 
-export function diagonal2(card: BingoCard): boolean {
+export function diagonal2(card: Cartones): boolean {
   return card.grid.every((row, i) => row[4 - i].marked);
 }
 
-export function cuatroesquinas(card: BingoCard): boolean {
+export function cuatroesquinas(card: Cartones): boolean {
   const g = card.grid;
   return (
     g[0][0].marked &&
@@ -36,7 +36,7 @@ export function cuatroesquinas(card: BingoCard): boolean {
   );
 }
 
-export function cabezaCola(card: BingoCard): boolean {
+export function cabezaCola(card: Cartones): boolean {
   const g = card.grid;
   return (
     g[0][0].marked &&
@@ -46,7 +46,7 @@ export function cabezaCola(card: BingoCard): boolean {
   );
 }
 
-export function cabezaCola2(card: BingoCard): boolean {
+export function cabezaCola2(card: Cartones): boolean {
   const g = card.grid;
   return (
     g[0][3].marked &&
@@ -56,28 +56,32 @@ export function cabezaCola2(card: BingoCard): boolean {
   );
 }
 
-export function pleno(card: BingoCard): boolean {
+export function pleno(card: Cartones): boolean {
+  card.grid.forEach((row, i) => {
+  console.log(`Fila ${i}:`, row.map(c => `${c.number}:${c.marked}`));
+});
   return card.grid.every(row => row.every(cell => cell.marked));
 }
 
-export function WinPleno(card: BingoCard): string | null {
+export function WinPleno(card: Cartones): string | null {
   if (pleno(card)) return "Cartón Pleno";
   return null;
 }
 
 
-export function getWinningFigure(card: BingoCard): string | null {
+export function figuraGanadora(card: Cartones): string | null {
   if (lineaHorizontal(card)) return "Línea horizontal";
   if (lineaVertical(card)) return "Línea vertical";
   if (diagonal1(card)) return "Diagonal principal";
   if (diagonal2(card)) return "Diagonal secundaria";
   if (cuatroesquinas(card)) return "Cuatro esquinas";
   if (cabezaCola(card)) return "Cabeza y Cola";
+  if (cabezaCola2(card)) return "Cabeza y Cola invertido";
   if (cuatroesquinas(card)) return "Cabeza y Cola invertida";
   return null;
 }
 
-export function markNumberOnCards(cards: BingoCard[], number: number): BingoCard[] {
+export function marcaNumeros(cards: Cartones[], number: number): Cartones[] {
   return cards.map(card => ({
     ...card,
     grid: card.grid.map(row =>

@@ -1,11 +1,11 @@
 import React from 'react';
-import { BingoCard } from '../data/bingoCards';
+import { Cartones } from '../data/Cartones';
 
 type Props = {
-  card: BingoCard;
+  card: Cartones;
 };
 
-const BingoCardView: React.FC<Props> = ({ card }) => {
+const VistaCarton: React.FC<Props> = ({ card }) => {
   return (
     <div style={styles.container}>
       <h3>Cartón {card.id}</h3>
@@ -53,4 +53,4 @@ const styles = {
   },
 };
 
-export default BingoCardView;
+export default VistaCarton;

@@ -1,11 +1,11 @@
 import React from 'react';
-import { BingoCard } from '../data/bingoCards';
-import BingoCardView from './BingoCardView';
+import { Cartones } from '../data/Cartones';
+import VistaCarton from './vistaCarton';
 
 type ModalProps = {
   message: string;
   onClose: () => void;
-  card?: BingoCard | null; // ✅ acepta null o undefined
+  card?: Cartones | null; // ✅ acepta null o undefined
 };
 
 const Modal: React.FC<ModalProps> = ({ message, onClose, card }) => {
@@ -16,7 +16,7 @@ const Modal: React.FC<ModalProps> = ({ message, onClose, card }) => {
         <p>{message}</p>
 
         {/* ✅ Aquí usamos la prop correctamente */}
-        {card && <BingoCardView card={card} />}
+        {card && <VistaCarton card={card} />}
 
         <button onClick={onClose}>Cerrar</button>
       </div>

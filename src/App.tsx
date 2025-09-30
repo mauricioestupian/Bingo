@@ -8,14 +8,14 @@ import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
 import "./App.css";
 import Modal from './components/Modal';
-import { BingoCard, bingoCards } from './data/bingoCards';
+import { Cartones, cartones } from './data/Cartones';
 import "./img/titulo.png";
-import { getWinningFigure, markNumberOnCards, WinPleno } from './logic/bingoValidation';
+import { figuraGanadora, marcaNumeros, WinPleno } from './logic/bingoValidar';
 
 
-const TOTAL_NUMBERS = 75;
+const TOTAL = 75;
 
-function getBingoLetter(number:number) {
+function tableroGeneral(number:number) {
   if (number >= 1 && number <= 15) return "B";
   if (number >= 16 && number <= 30) return "I";
   if (number >= 31 && number <= 45) return "N";
@@ -26,10 +26,10 @@ function getBingoLetter(number:number) {
 
 function App() {
   const [playedNumbers, setPlayedNumbers] = useState<number[]>([]);
-  const [cards, setCards] = useState<BingoCard[]>(() => [...bingoCards]);
-  const [modalMessage, setModalMessage] = useState<string | null>(null);
+  const [cards, setCards] = useState<Cartones[]>(() => [...cartones]);
+  const [modalMessage, mensajeModal] = useState<string | null>(null);
   const [inputId, setInputId] = useState<string>("");
-  const [selectedCard, setSelectedCard] = useState<BingoCard | null>(null);
+  const [selectedCard, cartonSeleccionado] = useState<Cartones | null>(null);
 
   const [valor1, setValor1] = useState("");
   const [valor2, setValor2] = useState("");
@@ -47,7 +47,7 @@ function App() {
 // ✅ Función flecha que genera un número aleatorio no repetido
 const singNumber = () => {
     const remaining = Array.from(
-      { length: TOTAL_NUMBERS },
+      { length: TOTAL },
       (_, i) => i + 1
     ).filter((n) => !calledNumbers.has(n));
 
@@ -61,7 +61,7 @@ const singNumber = () => {
     updated.add(random);
     setCalledNumbers(updated);
 
-    const letter = getBingoLetter(random);
+    const letter = tableroGeneral(random);
     const fullValue = `${letter} ${random}`;
     setLastNumber(fullValue);
 
@@ -77,7 +77,7 @@ const singNumber = () => {
     speechSynthesis.speak(utterance);*/
   
   // Marcar en cartones
-    const updatedCards = markNumberOnCards(cards, random);
+    const updatedCards = marcaNumeros(cards, random);
     setCards(updatedCards);
 
     // Guardar en historial
@@ -89,16 +89,16 @@ const singNumber = () => {
     const results: string[] = [];
 
     cards.forEach(card => {
-      const figure = getWinningFigure(card);
+      const figure = figuraGanadora(card);
       if (figure) {
         results.push(`Cartón ${card.id} completó: ${figure}`);
       }
     });
 
     if (results.length > 0) {
-      setModalMessage(results.join('\n'));
+      mensajeModal(results.join('\n'));
     } else {
-      setModalMessage('Ningún cartón ha completado una figura aún.');
+      mensajeModal('Ningún cartón ha completado una figura aún.');
     }
   }
   
@@ -106,20 +106,20 @@ const singNumber = () => {
   const card = cards.find(c => c.id === cardId);
 
   if (!card) {
-    setModalMessage(`❌ No se encontró el cartón con ID ${cardId}`);
-    setSelectedCard(null);
+    mensajeModal(`❌ No se encontró el cartón con ID ${cardId}`);
+    cartonSeleccionado(null);
     return;
   }
 
-  const figure = getWinningFigure(card);
+  const figure = figuraGanadora(card);
 
   if (figure) {
-    setModalMessage(`🎉 El cartón ${cardId} ha completado la figura: ${figure}`);
+    mensajeModal(`🎉 El cartón ${cardId} ha completado la figura: ${figure}`);
   } else {
-    setModalMessage(`El cartón ${cardId} no ha completado ninguna figura aún.`);
+    mensajeModal(`El cartón ${cardId} no ha completado ninguna figura aún.`);
   }
 
-  setSelectedCard(card);
+  cartonSeleccionado(card);
 
   }
 
@@ -127,38 +127,39 @@ const singNumber = () => {
   const card = cards.find(c => c.id === cardId);
 
   if (!card) {
-    setModalMessage(`❌ No se encontró el cartón con ID ${cardId}`);
-    setSelectedCard(null);
+    mensajeModal(`❌ No se encontró el cartón con ID ${cardId}`);
+    cartonSeleccionado(null);
     return;
   }
 
   const figure = WinPleno(card);
 
   if (figure) {
-    setModalMessage(`🎉 El cartón ${cardId} ha completado: ${figure}`);
+    mensajeModal(`🎉 El cartón ${cardId} ha completado: ${figure}`);
   } else {
-    setModalMessage(`El cartón ${cardId} no ha completado pleno aún.`);
+    mensajeModal(`El cartón ${cardId} no ha completado pleno aún.`);
   }
 
-  setSelectedCard(card);
+  cartonSeleccionado(card);
 
   }
   
   function resetGame() {
   // Restaurar cartones originales sin marcas
-  const freshCards = bingoCards.map(card => ({
+  const freshCards = cartones.map(card => ({
     ...card,
-    grid: card.grid.map(row =>
-      row.map(cell => ({ ...cell, marked: false }))
+    grid: card.grid.map((row, rowIndex) =>
+      row.map((cell, colIndex) => ({
+        ...cell,
+        marked: cell.number === 0 || (rowIndex === 2 && colIndex === 2)
+      }))
     )
   }));
 
   setCards(freshCards);
   setPlayedNumbers([]);
-  setModalMessage(null);
-  setSelectedCard(null);
-  // Si usas singNumber como estado:
-  // setSingNumber(null);
+  mensajeModal(null);
+  cartonSeleccionado(null);
 }
   
   
@@ -246,8 +247,8 @@ const singNumber = () => {
         <Modal
         message={modalMessage}
         onClose={() => {
-          setModalMessage(null);
-          setSelectedCard(null);
+          mensajeModal(null);
+          cartonSeleccionado(null);
         }}
         card={selectedCard}
       />
