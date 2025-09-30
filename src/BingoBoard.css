@@ -1,0 +1,61 @@
+.bingo-table {
+  width: 100%;
+  max-width: 500px;
+  margin: 2rem auto;
+  border-collapse: collapse;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Encabezados de columna (BINGO) */
+.bingo-table th {
+  background-color: #ff6f61;
+  color: white;
+  font-size: 1.6rem;
+  padding: 1rem;
+  text-align: center;
+  border: 1px solid #e0e0e0;
+  letter-spacing: 2px;
+}
+
+/* Celdas normales */
+.bingo-table td {
+  width: 20%;
+  height: 80px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: 1px solid #ddd;
+  background-color: #fefefe;
+  color: #333;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+/* Hover para celdas no seleccionadas */
+.bingo-table td:hover {
+  background-color: #e3f2fd;
+  transform: scale(1.05);
+}
+
+/* Celdas seleccionadas */
+.bingo-table td.marked {
+  background-color: #4caf50;
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Hover para celdas seleccionadas */
+.bingo-table td.marked:hover {
+  background-color: #388e3c;
+}
+
+/* Celda FREE */
+.bingo-table td[style*="default"] {
+  background-color: #cfd8dc;
+  color: #555;
+  font-style: italic;
+  cursor: default !important;
+}

@@ -7,7 +7,9 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
 import QRCode from "react-qr-code";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
+import JuegaCarton from "./components/JuegaCarton";
 import Modal from './components/Modal';
 import { Cartones, cartones } from './data/Cartones';
 import "./img/titulo.png";
@@ -179,6 +181,9 @@ const singNumber = () => {
 
   
   return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={
     <Container>
       <div className="grid-container">
         <div></div>
@@ -275,8 +280,11 @@ const singNumber = () => {
 )}
     </div>
 
-    </Container>
-    
+          </Container>
+        } />
+         <Route path="/carton" element={<JuegaCarton />} />
+        </Routes>
+      </BrowserRouter>
   );
 }
 
