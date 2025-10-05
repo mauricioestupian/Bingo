@@ -20,7 +20,7 @@ function getUniqueNumbers(min: number, max: number, count: number): number[] {
 }
 
 type BingoCell = {
-  value: number | "FREE";
+  value: number | "FREE"| "CROODS";
   selected: boolean;
 };
 
@@ -36,7 +36,7 @@ function generateBoard(): BingoCell[][] {
     const rowCells: BingoCell[] = [];
     for (let col = 0; col < 5; col++) {
       if (row === 2 && col === 2) {
-        rowCells.push({ value: "FREE", selected: true });
+        rowCells.push({ value: "CROODS", selected: true });
       } else {
         const idx = col === 2 && row > 1 ? row - 1 : row;
         rowCells.push({ value: columns[col][idx], selected: false });
