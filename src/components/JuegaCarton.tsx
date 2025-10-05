@@ -6,7 +6,7 @@ const JuegaCarton = () => {
 
   return (
     <div>
-          <h1>Bingo Game</h1>
+          <h1>Bingo los Croods</h1>
           <BingoBoard calledNumbers={calledNumbers} />
     </div>
   );
