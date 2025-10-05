@@ -37,19 +37,24 @@ function App() {
   const [valor1, setValor1] = useState("");
   const [valor2, setValor2] = useState("");
 
-  const handleChange1 = (e) => setValor1(e.target.value);
-  const handleChange2 = (e) => setValor2(e.target.value);
+  //const handleChange1 = (e) => setValor1(e.target.value);
+  //const handleChange2 = (e) => setValor2(e.target.value);
+  const handleChange1 = (e: React.ChangeEvent<HTMLInputElement>) => setValor1(e.target.value);
+const handleChange2 = (e: React.ChangeEvent<HTMLInputElement>) => setValor2(e.target.value);
 
   const resultado = (parseFloat(valor1) || 0) * (parseFloat(valor2) || 0);
 
-  const [calledNumbers, setCalledNumbers] = useState(new Set());
+  //const [calledNumbers, setCalledNumbers] = useState(new Set());
+  // ...existing code...
+const [calledNumbers, setCalledNumbers] = useState<Set<number>>(new Set<number>());
+// ...existing code...
   //const [lastNumber, setLastNumber] = useState<number | null>(null);
   const [lastNumber, setLastNumber] = useState<string | number | null>(null);
 
   const [showQR, setShowQR] = useState(false);
   //https://bingo-eight-liart.vercel.app/
-  const cartonUrl = `http://bingo-eight-liart.vercel.app/carton`;
-  //const cartonUrl = `${window.location.origin}/carton`;
+  //const cartonUrl = `http://bingo-eight-liart.vercel.app/carton`;
+  const cartonUrl: string = `${window.location.origin}/carton`;
   // Cambia esta URL por la de tu servidor si lo despliegas
 
 
@@ -288,13 +293,18 @@ const singNumber = () => {
   );
 }
 
-function BingoBall({ value }) {
+function BingoBall({ value }: { value: string | number | null }) {
   if (!value) return null;
-
   return <div className="bingo-ball">{value}</div>;
 }
 
-function Board({ calledNumbers, setCalledNumbers }) {
+function Board({
+  calledNumbers,
+  setCalledNumbers,
+}: {
+  calledNumbers: Set<number>;
+  setCalledNumbers: React.Dispatch<React.SetStateAction<Set<number>>>;
+}) {
   const rows = [
     { letter: "B", range: [1, 15] },
     { letter: "I", range: [16, 30] },
@@ -303,8 +313,9 @@ function Board({ calledNumbers, setCalledNumbers }) {
     { letter: "O", range: [61, 75] },
   ];
 
-  const toggleNumber = (num) => {
-    const updated = new Set(calledNumbers);
+  // Tipar el parámetro num como number
+  const toggleNumber = (num: number) => {
+    const updated = new Set<number>(calledNumbers);
     if (updated.has(num)) {
       updated.delete(num);
     } else {
@@ -325,7 +336,8 @@ function Board({ calledNumbers, setCalledNumbers }) {
               <div
                 key={num}
                 className={`cell ${marked ? "marked" : ""}`}
-                /*onClick={() => toggleNumber(num)}*/
+                // Si quieres permitir marcar/desmarcar, descomenta la siguiente línea:
+                // onClick={() => toggleNumber(num)}
               >
                 {num}
               </div>
