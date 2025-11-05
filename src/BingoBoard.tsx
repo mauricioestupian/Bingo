@@ -25,22 +25,20 @@ type BingoCell = {
 };
 
 function generateBoard(): BingoCell[][] {
-  const columns = LETTERS.map((letter) => {
+  const columns = LETTERS.map(letter => {
     const [min, max] = RANGES[letter];
-    const count = letter === "N" ? 4 : 5;
-    return getUniqueNumbers(min, max, count);
+    return getUniqueNumbers(min, max, 5); // 5 números POR COLUMNA
   });
 
   const board: BingoCell[][] = [];
   for (let row = 0; row < 5; row++) {
     const rowCells: BingoCell[] = [];
     for (let col = 0; col < 5; col++) {
-      if (row === 2 && col === 2) {
-        rowCells.push({ value: "CROODS", selected: true });
-      } else {
-        const idx = col === 2 && row > 1 ? row - 1 : row;
-        rowCells.push({ value: columns[col][idx], selected: false });
-      }
+      // usar siempre el número generado; NO asignar 0 ni "FREE"
+      rowCells.push({
+        value: columns[col][row],
+        selected: false,
+      });
     }
     board.push(rowCells);
   }

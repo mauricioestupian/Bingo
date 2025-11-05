@@ -1,48 +1,74 @@
-import React from 'react';
-import { Cartones } from '../data/Cartones';
-import VistaCarton from './vistaCarton';
+import React, { useEffect } from "react";
+import "../BingoBoard.css";
+import { Cartones } from "../data/Cartones";
+import { getWinningCells } from "../logic/bingoValidar";
 
-type ModalProps = {
-  message: string;
+type Props = {
+  message: string | null;
   onClose: () => void;
-  card?: Cartones | null; // ✅ acepta null o undefined
+  card: Cartones | null;
+  color?: string; // <-- nuevo
 };
 
-const Modal: React.FC<ModalProps> = ({ message, onClose, card }) => {
+const Modal: React.FC<Props> = ({ message, onClose, card, color }) => {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  if (!message) return null;
+
+  const winning = card ? getWinningCells(card) : new Set<string>();
+
   return (
-    <div style={styles.overlay}>
-      <div style={styles.modal}>
-        <h2>Resultado de Bingo</h2>
-        <p>{message}</p>
+    <div className="modal-overlay" role="dialog" aria-modal="true" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        {/* botón de cierre pequeño (×) en la esquina */}
+        <button className="modal-close" onClick={onClose} aria-label="Cerrar">×</button>
 
-        {/* ✅ Aquí usamos la prop correctamente */}
-        {card && <VistaCarton card={card} />}
+        <div className="modal-message" style={{ color: color || "inherit", textAlign: "center", marginBottom: 8 }}>
+          <strong>{message}</strong>
+        </div>
 
-        <button onClick={onClose}>Cerrar</button>
+        
+
+        {card && (
+          <table className="card-table modal-card" aria-hidden={!card}>
+            <tbody>
+              {card.grid.map((row, r) => (
+                <tr key={r}>
+                  {row.map((cell, c) => {
+                    const key = `${r}-${c}`;
+                    const isWinner = winning.has(key);
+                    const isCenter = r === 2 && c === 2;
+                    const classes = [
+                      cell.marked ? "marked" : "",
+                      isWinner ? "winner" : "",
+                      isCenter ? "center-cell" : ""
+                    ].join(" ").trim();
+                    return (
+                      <td key={key} className={classes}>
+                        {cell.number}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        {/* botón "Cerrar" colocado debajo del mensaje */}
+        <div style={{ textAlign: "center", margin: "8px 0 12px 0" }}>
+          <button className="btn btn-secondary" onClick={onClose}>
+            Cerrar
+          </button>
+        </div>
       </div>
     </div>
   );
-};
-
-const styles = {
-  overlay: {
-    position: 'fixed' as const,
-    top: 0,
-    left: 0,
-    width: '100vw',
-    height: '100vh',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  modal: {
-    backgroundColor: '#fff',
-    padding: '2rem',
-    borderRadius: '8px',
-    textAlign: 'center',
-    minWidth: '300px'
-  }
 };
 
 export default Modal;

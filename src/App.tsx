@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from 'react';
+import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -10,10 +10,10 @@ import QRCode from "react-qr-code";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import JuegaCarton from "./components/JuegaCarton";
-import Modal from './components/Modal';
+import Modal from "./components/Modal";
 import { Cartones, cartones } from './data/Cartones';
 import "./img/titulo.png";
-import { figuraGanadora, marcaNumeros, WinPleno } from './logic/bingoValidar';
+import { figuraGanadora, marcaNumeros, WinPleno } from "./logic/bingoValidar";
 
 
 const TOTAL = 75;
@@ -28,10 +28,11 @@ function tableroGeneral(number:number) {
 }
 
 function App() {
+  const [inputId, setInputId] = useState<string>("");
   const [playedNumbers, setPlayedNumbers] = useState<number[]>([]);
   const [cards, setCards] = useState<Cartones[]>(() => [...cartones]);
   const [modalMessage, mensajeModal] = useState<string | null>(null);
-  const [inputId, setInputId] = useState<string>("");
+  const [modalMessageColor, setModalMessageColor] = useState<string>(""); // <-- nuevo
   const [selectedCard, cartonSeleccionado] = useState<Cartones | null>(null);
 
   const [valor1, setValor1] = useState("");
@@ -45,9 +46,7 @@ const handleChange2 = (e: React.ChangeEvent<HTMLInputElement>) => setValor2(e.ta
   const resultado = (parseFloat(valor1) || 0) * (parseFloat(valor2) || 0);
 
   //const [calledNumbers, setCalledNumbers] = useState(new Set());
-  // ...existing code...
-const [calledNumbers, setCalledNumbers] = useState<Set<number>>(new Set<number>());
-// ...existing code...
+  const [calledNumbers, setCalledNumbers] = useState<Set<number>>(new Set<number>());
   //const [lastNumber, setLastNumber] = useState<number | null>(null);
   const [lastNumber, setLastNumber] = useState<string | number | null>(null);
 
@@ -117,24 +116,38 @@ const singNumber = () => {
   }
   
   function validarCarton(cardId: string) {
-  const card = cards.find(c => c.id === cardId);
+    const card = cards.find(c => c.id === cardId);
+    if (!card) {
+      mensajeModal(`❌ No se encontró el cartón con ID ${cardId}`);
+      setModalMessageColor("red");
+      cartonSeleccionado(null);
+      return;
+    }
 
-  if (!card) {
-    mensajeModal(`❌ No se encontró el cartón con ID ${cardId}`);
-    cartonSeleccionado(null);
-    return;
-  }
+    const figure = figuraGanadora(card);
+    if (figure) {
+      mensajeModal(`🎉 El cartón ${cardId} ha completado la figura: ${figure}`);
+       setModalMessageColor("Black");
+    } else {
+      mensajeModal(`El cartón ${cardId} no ha completado ninguna figura aún.`);
+      setModalMessageColor("red");
+    }
 
-  const figure = figuraGanadora(card);
+    // Clonar el cartón y forzar que la casilla central [2][2] muestre el valor captado (cardId)
+    const cardCopy: Cartones = {
+      ...card,
+      grid: card.grid.map((row) => row.map(cell => ({ ...cell })))
+    };
 
-  if (figure) {
-    mensajeModal(`🎉 El cartón ${cardId} ha completado la figura: ${figure}`);
-  } else {
-    mensajeModal(`El cartón ${cardId} no ha completado ninguna figura aún.`);
-  }
+    // Si quieres mostrar el id (string) como número intenta parsearlo, si no, dejar el número original
+    const parsed = Number(cardId);
+    cardCopy.grid[2][2].number = Number.isFinite(parsed) && parsed !== 0 ? parsed : cardCopy.grid[2][2].number;
 
-  cartonSeleccionado(card);
+    // Si prefieres mostrar el id como texto (no número), convierte a string y ajusta render del modal
+    // cardCopy.grid[2][2].number = parsed || cardCopy.grid[2][2].number;
 
+    // pasar el cartón modificado al modal
+    cartonSeleccionado(cardCopy);
   }
 
   function validarPleno(cardId: string) {
@@ -142,6 +155,7 @@ const singNumber = () => {
 
   if (!card) {
     mensajeModal(`❌ No se encontró el cartón con ID ${cardId}`);
+    setModalMessageColor("red");
     cartonSeleccionado(null);
     return;
   }
@@ -152,6 +166,7 @@ const singNumber = () => {
     mensajeModal(`🎉 El cartón ${cardId} ha completado: ${figure}`);
   } else {
     mensajeModal(`El cartón ${cardId} no ha completado pleno aún.`);
+    setModalMessageColor("red");
   }
 
   cartonSeleccionado(card);
@@ -266,8 +281,10 @@ const singNumber = () => {
         onClose={() => {
           mensajeModal(null);
           cartonSeleccionado(null);
+          setModalMessageColor("");
         }}
-        card={selectedCard}
+                  card={selectedCard}
+                  color={modalMessageColor} // <-- pasar color al modal
       />
       )}
 

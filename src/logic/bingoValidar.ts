@@ -64,8 +64,7 @@ export function pleno(card: Cartones): boolean {
 }
 
 export function WinPleno(card: Cartones): string | null {
-  if (pleno(card)) return "Cartón Pleno";
-  return null;
+  return pleno(card) ? "Pleno" : null;
 }
 
 
@@ -80,13 +79,60 @@ export function figuraGanadora(card: Cartones): string | null {
   return null;
 }
 
-export function marcaNumeros(cards: Cartones[], number: number): Cartones[] {
+export function marcaNumeros(cards: Cartones[], num: number): Cartones[] {
   return cards.map(card => ({
     ...card,
     grid: card.grid.map(row =>
-      row.map(cell =>
-        cell.number === number ? { ...cell, marked: true } : cell
-      )
+      row.map(cell => cell.number === num ? { ...cell, marked: true } : cell)
     )
   }));
+}
+
+// Devuelve un Set con las celdas que forman la(s) figura(s) ganadora(s) en formato "r-c"
+export function getWinningCells(card: Cartones): Set<string> {
+  const winners = new Set<string>();
+  const g = card.grid;
+  const size = g.length || 5;
+
+  const addRow = (r: number) => { for (let c = 0; c < size; c++) winners.add(`${r}-${c}`); };
+  const addCol = (c: number) => { for (let r = 0; r < size; r++) winners.add(`${r}-${c}`); };
+  const addDiagMain = () => { for (let i = 0; i < size; i++) winners.add(`${i}-${i}`); };
+  const addDiagSec = () => { for (let i = 0; i < size; i++) winners.add(`${i}-${size - 1 - i}`); };
+
+  // filas completas
+  for (let r = 0; r < size; r++) {
+    if (g[r].every(cell => cell.marked)) addRow(r);
+  }
+
+  // columnas completas
+  for (let c = 0; c < size; c++) {
+    let all = true;
+    for (let r = 0; r < size; r++) {
+      if (!g[r][c].marked) { all = false; break; }
+    }
+    if (all) addCol(c);
+  }
+
+  // diagonales
+  if (g.every((row, i) => row[i].marked)) addDiagMain();
+  if (g.every((row, i) => row[size - 1 - i].marked)) addDiagSec();
+
+  // figuras específicas: usa tus validadores existentes
+  if (typeof cuatroesquinas === "function" && cuatroesquinas(card)) {
+    [[0,0],[0,size-1],[size-1,0],[size-1,size-1]].forEach(([r,c]) => winners.add(`${r}-${c}`));
+  }
+  if (typeof cabezaCola === "function" && cabezaCola(card)) {
+    // ajustar coordenadas si tu función usa otras posiciones
+    [[0,0],[0,1],[size-1,size-2],[size-1,size-1]].forEach(([r,c]) => winners.add(`${r}-${c}`));
+  }
+  if (typeof cabezaCola2 === "function" && cabezaCola2(card)) {
+    [[0,size-2],[0,size-1],[size-1,0],[size-1,1]].forEach(([r,c]) => winners.add(`${r}-${c}`));
+  }
+
+  // pleno -> todas las celdas
+  if (typeof pleno === "function" && pleno(card)) {
+    for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) winners.add(`${r}-${c}`);
+  }
+
+  return winners;
 }
