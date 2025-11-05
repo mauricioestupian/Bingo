@@ -56,6 +56,25 @@ export function cabezaCola2(card: Cartones): boolean {
   );
 }
 
+export function cruzexterna(card: Cartones): boolean {
+  const g = card.grid;
+  return (
+    g[0][2].marked &&
+    g[2][0].marked &&
+    g[2][4].marked &&
+    g[4][2].marked
+  );
+}
+
+export function cruzinterna(card: Cartones): boolean {
+  const g = card.grid;
+  return (
+    g[1][2].marked &&
+    g[2][1].marked &&
+    g[2][3].marked &&
+    g[3][2].marked
+  );
+}
 export function pleno(card: Cartones): boolean {
   card.grid.forEach((row, i) => {
   console.log(`Fila ${i}:`, row.map(c => `${c.number}:${c.marked}`));
@@ -69,13 +88,15 @@ export function WinPleno(card: Cartones): string | null {
 
 
 export function figuraGanadora(card: Cartones): string | null {
-  if (lineaHorizontal(card)) return "Línea horizontal";
-  if (lineaVertical(card)) return "Línea vertical";
-  if (diagonal1(card)) return "Diagonal principal";
-  if (diagonal2(card)) return "Diagonal secundaria";
+  if (lineaHorizontal(card)) return "Raya horizontal";
+  if (lineaVertical(card)) return "Raya vertical";
+  if (diagonal1(card)) return "Macuetazo";
+  if (diagonal2(card)) return "Machetazo invertido";
   if (cuatroesquinas(card)) return "Cuatro esquinas";
   if (cabezaCola(card)) return "Cabeza y Cola";
   if (cabezaCola2(card)) return "Cabeza y Cola invertido";
+  if (cruzinterna(card)) return "Cruz interna";
+  if (cruzexterna(card)) return "Cruz externa";
   return null;
 }
 
@@ -89,7 +110,7 @@ export function marcaNumeros(cards: Cartones[], num: number): Cartones[] {
 }
 
 // Devuelve un Set con las celdas que forman la(s) figura(s) ganadora(s) en formato "r-c"
-export function getWinningCells(card: Cartones): Set<string> {
+export function muestrafiguras(card: Cartones): Set<string> {
   const winners = new Set<string>();
   const g = card.grid;
   const size = g.length || 5;
@@ -127,6 +148,12 @@ export function getWinningCells(card: Cartones): Set<string> {
   }
   if (typeof cabezaCola2 === "function" && cabezaCola2(card)) {
     [[0,size-2],[0,size-1],[size-1,0],[size-1,1]].forEach(([r,c]) => winners.add(`${r}-${c}`));
+  }
+  if (typeof cruzexterna === "function" && cruzexterna(card)) {
+    [[0,2],[2,0],[2,4],[4,2]].forEach(([r,c]) => winners.add(`${r}-${c}`));
+  }
+  if (typeof cruzinterna === "function" && cruzinterna(card)) {
+    [[1,2],[2,1],[2,3],[3,2]].forEach(([r,c]) => winners.add(`${r}-${c}`));
   }
 
   // pleno -> todas las celdas

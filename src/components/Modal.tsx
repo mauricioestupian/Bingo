@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import "../BingoBoard.css";
 import { Cartones } from "../data/Cartones";
-import { getWinningCells } from "../logic/bingoValidar";
+import { muestrafiguras } from "../logic/bingoValidar";
 
 type Props = {
   message: string | null;
   onClose: () => void;
   card: Cartones | null;
-  color?: string; // <-- nuevo
+  color?: string; // <-- definir color fuente mensaje
 };
 
 const Modal: React.FC<Props> = ({ message, onClose, card, color }) => {
@@ -21,7 +21,7 @@ const Modal: React.FC<Props> = ({ message, onClose, card, color }) => {
 
   if (!message) return null;
 
-  const winning = card ? getWinningCells(card) : new Set<string>();
+  const winning = card ? muestrafiguras(card) : new Set<string>();
 
   return (
     <div className="modal-overlay" role="dialog" aria-modal="true" onClick={onClose}>
