@@ -13,7 +13,7 @@ import JuegaCarton from "./components/JuegaCarton";
 import Modal from "./components/Modal";
 import { Cartones, cartones } from './data/Cartones';
 import "./img/titulo.png";
-import { figuraGanadora, marcaNumeros, WinPleno } from "./logic/bingoValidar";
+import { figuraGanadora, marcaNumeros, pleno } from "./logic/bingoValidar";
 
 
 const TOTAL = 75;
@@ -49,6 +49,7 @@ const handleChange2 = (e: React.ChangeEvent<HTMLInputElement>) => setValor2(e.ta
   const [calledNumbers, setCalledNumbers] = useState<Set<number>>(new Set<number>());
   //const [lastNumber, setLastNumber] = useState<number | null>(null);
   const [lastNumber, setLastNumber] = useState<string | number | null>(null);
+  const [modalMode, setModalMode] = useState<"figuras" | "pleno">("figuras");
 
   const [showQR, setShowQR] = useState(false);
   //https://bingo-eight-liart.vercel.app/
@@ -127,10 +128,12 @@ const singNumber = () => {
     const figure = figuraGanadora(card);
     if (figure) {
       mensajeModal(`🎉 El cartón ${cardId} ha completado la figura: ${figure}`);
-       setModalMessageColor("Black");
+      setModalMessageColor("Black");
+      setModalMode("figuras"); 
     } else {
       mensajeModal(`El cartón ${cardId} no ha completado ninguna figura aún.`);
       setModalMessageColor("red");
+      setModalMode("figuras"); 
     }
 
     // Clonar el cartón y forzar que la casilla central [2][2] muestre el valor captado (cardId)
@@ -157,19 +160,33 @@ const singNumber = () => {
     mensajeModal(`❌ No se encontró el cartón con ID ${cardId}`);
     setModalMessageColor("red");
     cartonSeleccionado(null);
+    setModalMode("pleno");
     return;
   }
 
-  const figure = WinPleno(card);
+  const isPleno = typeof pleno === "function" && pleno(card);
 
-  if (figure) {
-    mensajeModal(`🎉 El cartón ${cardId} ha completado: ${figure}`);
+  if (isPleno) {
+    mensajeModal(`🎉 El cartón ${cardId} ha completado: Pleno`);
+    setModalMessageColor("black");
+    setModalMode("pleno");
   } else {
     mensajeModal(`El cartón ${cardId} no ha completado pleno aún.`);
     setModalMessageColor("red");
-  }
+    setModalMode("pleno");
+    }
+    
+    // Clonar el cartón y modificar la celda central como en validarCarton
+  const cardCopy: Cartones = {
+    ...card,
+    grid: card.grid.map((row) => row.map(cell => ({ ...cell })))
+  };
 
-  cartonSeleccionado(card);
+  const parsed = Number(cardId);
+  cardCopy.grid[2][2].number = Number.isFinite(parsed) && parsed !== 0 ? parsed : cardCopy.grid[2][2].number;
+
+  cartonSeleccionado(cardCopy);
+
 
   }
   
@@ -284,7 +301,8 @@ const singNumber = () => {
           setModalMessageColor("");
         }}
                   card={selectedCard}
-                  color={modalMessageColor} // <-- pasar color al modal
+                  color={modalMessageColor}
+                   modo={modalMode}// <-- pasar color al modal
       />
       )}
 

@@ -82,10 +82,11 @@ export function pleno(card: Cartones): boolean {
   return card.grid.every(row => row.every(cell => cell.marked));
 }
 
+/*
 export function WinPleno(card: Cartones): string | null {
   return pleno(card) ? "Pleno" : null;
 }
-
+*/
 
 export function figuraGanadora(card: Cartones): string | null {
   if (lineaHorizontal(card)) return "Raya horizontal";
@@ -156,9 +157,25 @@ export function muestrafiguras(card: Cartones): Set<string> {
     [[1,2],[2,1],[2,3],[3,2]].forEach(([r,c]) => winners.add(`${r}-${c}`));
   }
 
-  // pleno -> todas las celdas
+  /* pleno -> todas las celdas
   if (typeof pleno === "function" && pleno(card)) {
     for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) winners.add(`${r}-${c}`);
+  }*/
+
+  return winners;
+}
+
+export function figuraPleno(card: Cartones): Set<string> {
+  const winners = new Set<string>();
+  const g = card.grid;
+  const size = g.length || 5;
+
+  if (typeof pleno === "function" && pleno(card)) {
+    for (let r = 0; r < size; r++) {
+      for (let c = 0; c < size; c++) {
+        winners.add(`${r}-${c}`);
+      }
+    }
   }
 
   return winners;

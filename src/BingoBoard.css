@@ -199,7 +199,8 @@
 /* si el centro está marcado y también quieres conservar marcado verde, ajusta: */
 .modal-card td.center-cell.marked {
   background: transparent !important; /* sigue transparente aunque esté marcado */
-  color: rgba(76, 175, 80, 1); /* opcional: color del número si quieres verde */
+  color: rgb(25, 21, 74); /* opcional: color del número si quieres verde */
+  font-size: large;
 }
 
 /* Ajustes móviles */

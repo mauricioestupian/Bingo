@@ -1,16 +1,17 @@
 import React, { useEffect } from "react";
 import "../BingoBoard.css";
 import { Cartones } from "../data/Cartones";
-import { muestrafiguras } from "../logic/bingoValidar";
+import { muestrafiguras,figuraPleno } from "../logic/bingoValidar";
 
 type Props = {
   message: string | null;
   onClose: () => void;
   card: Cartones | null;
   color?: string; // <-- definir color fuente mensaje
+  modo?: "figuras" | "pleno"; // define tipo de modal figuras o pleno
 };
 
-const Modal: React.FC<Props> = ({ message, onClose, card, color }) => {
+const Modal: React.FC<Props> = ({ message, onClose, card, color, modo }) => {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -21,7 +22,12 @@ const Modal: React.FC<Props> = ({ message, onClose, card, color }) => {
 
   if (!message) return null;
 
-  const winning = card ? muestrafiguras(card) : new Set<string>();
+  // winning = card ? muestrafiguras(card) : new Set<string>();
+  const winning = card
+  ? modo === "pleno"
+    ? figuraPleno(card)
+    : muestrafiguras(card)
+  : new Set<string>();
 
   return (
     <div className="modal-overlay" role="dialog" aria-modal="true" onClick={onClose}>

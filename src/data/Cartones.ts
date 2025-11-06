@@ -1168,4 +1168,16 @@ export const cartones: Cartones[] = [
       [ { number:13, marked: false }, { number: 28, marked: false }, { number: 37, marked: false }, { number: 57, marked: false }, { number: 66, marked: false } ]
     ]
   }
+
+  //Cali cartones hasta colores
+  {
+    id: "",
+    grid: [
+      [ { number:, marked: false }, { number:, marked: false }, { number:, marked: false }, { number:, marked: false }, { number:, marked: false } ],
+      [ { number:, marked: false }, { number:, marked: false }, { number:, marked: false }, { number:, marked: false }, { number:, marked: false } ],
+      [ { number:, marked: false }, { number:, marked: false }, { number: 0, marked: true },  { number:, marked: false }, { number:, marked: false } ],
+      [ { number:, marked: false }, { number:, marked: false }, { number:, marked: false }, { number:, marked: false }, { number:, marked: false } ],
+      [ { number:, marked: false }, { number:, marked: false }, { number:, marked: false }, { number:, marked: false }, { number:, marked: false } ]
+    ]
+  }
 ];
