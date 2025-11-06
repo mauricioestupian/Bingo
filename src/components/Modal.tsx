@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "../BingoBoard.css";
 import { Cartones } from "../data/Cartones";
-import { muestrafiguras,figuraPleno } from "../logic/bingoValidar";
+import { figuraPleno, muestrafiguras } from "../logic/bingoValidar";
 
 type Props = {
   message: string | null;
@@ -33,7 +33,6 @@ const Modal: React.FC<Props> = ({ message, onClose, card, color, modo }) => {
     <div className="modal-overlay" role="dialog" aria-modal="true" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         {/* botón de cierre pequeño (×) en la esquina */}
-        <button className="modal-close" onClick={onClose} aria-label="Cerrar">×</button>
 
         <div className="modal-message" style={{ color: color || "inherit", textAlign: "center", marginBottom: 8 }}>
           <strong>{message}</strong>
