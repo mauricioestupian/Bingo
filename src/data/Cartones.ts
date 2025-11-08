@@ -1245,6 +1245,16 @@ export const cartones: Cartones[] = [
     ]
   },
   {
+    id: "47242",
+    grid: [
+      [ { number: 7, marked: false }, { number:29, marked: false }, { number:43, marked: false }, { number:51, marked: false }, { number:73, marked: false } ],
+      [ { number:12, marked: false }, { number:22, marked: false }, { number:42, marked: false }, { number:48, marked: false }, { number:72, marked: false } ],
+      [ { number: 4, marked: false }, { number:18, marked: false }, { number: 0, marked: true },  { number:60, marked: false }, { number:64, marked: false } ],
+      [ { number: 1, marked: false }, { number:19, marked: false }, { number:35, marked: false }, { number:46, marked: false }, { number:63, marked: false } ],
+      [ { number: 2, marked: false }, { number:23, marked: false }, { number:38, marked: false }, { number:55, marked: false }, { number:68, marked: false } ]
+    ]
+  },
+  {
     id: "47248",
     grid: [
       [ { number: 2, marked: false }, { number:26, marked: false }, { number:36, marked: false }, { number:46, marked: false }, { number:62, marked: false } ],
