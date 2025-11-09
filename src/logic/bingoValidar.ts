@@ -36,6 +36,16 @@ export function cuatroesquinas(card: Cartones): boolean {
   );
 }
 
+export function cuatroesquinas2(card: Cartones): boolean {
+  const g = card.grid;
+  return (
+    g[1][1].marked &&
+    g[1][3].marked &&
+    g[3][1].marked &&
+    g[3][3].marked
+  );
+}
+
 export function cabezaCola(card: Cartones): boolean {
   const g = card.grid;
   return (
@@ -98,6 +108,7 @@ export function figuraGanadora(card: Cartones): string | null {
   if (cabezaCola2(card)) return "Cabeza y Cola invertido";
   if (cruzinterna(card)) return "Cruz interna";
   if (cruzexterna(card)) return "Cruz externa";
+  if (cuatroesquinas2(card)) return "Cuatro esquinas interno";
   return null;
 }
 
