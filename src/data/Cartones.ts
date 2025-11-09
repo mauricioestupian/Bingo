@@ -497,8 +497,8 @@ export const cartones: Cartones[] = [
       [ { number: 9, marked: false }, { number: 27, marked: false }, { number: 41, marked: false }, { number: 56, marked: false }, { number: 62, marked: false } ],
       [ { number: 10, marked: false }, { number: 18, marked: false }, { number: 31, marked: false }, { number: 49, marked: false }, { number: 69, marked: false } ],
       [ { number: 11, marked: false }, { number: 16, marked: false }, { number: 0, marked: true },  { number: 52, marked: false }, { number: 64, marked: false } ],
-      [ { number: 7, marked: false }, { number: 30, marked: false }, { number: 30, marked: false }, { number: 58, marked: false }, { number: 75, marked: false } ],
-      [ { number: 8, marked: false }, { number: 29, marked: false }, { number: 29, marked: false }, { number: 59, marked: false }, { number: 73, marked: false } ]
+      [ { number: 7, marked: false }, { number: 30, marked: false }, { number: 42, marked: false }, { number: 58, marked: false }, { number: 75, marked: false } ],
+      [ { number: 8, marked: false }, { number: 29, marked: false }, { number: 44, marked: false }, { number: 59, marked: false }, { number: 73, marked: false } ]
     ]
   },
   {
