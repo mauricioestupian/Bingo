@@ -12,6 +12,7 @@ import "./App.css";
 import JuegaCarton from "./components/JuegaCarton";
 import Modal from "./components/Modal";
 import { Cartones, cartones } from './data/Cartones';
+import "./img/arbol.webp";
 import "./img/titulo.png";
 import { figuraGanadora, marcaNumeros, pleno } from "./logic/bingoValidar";
 
@@ -223,20 +224,26 @@ const singNumber = () => {
         <Route path="/" element={
     <Container>
       <div className="grid-container">
-        <div></div>
+        <div className="arbol">
+         <img src="https://cdn.pixabay.com/animation/2023/03/12/13/46/13-46-48-414_512.gif" className="tree-image" />
+        </div>
         <div className="img-container">
           <img src="/titulo.png" className="title-image" />
         </div>
         <div className="BingoBallContainer">
           <BingoBall value={lastNumber} />
         </div>
-        <div className="buttons">
-          <Button variant="success" onClick={singNumber}>
-            Cantar número
-          </Button>
-          <Button variant="outline-danger" onClick={resetBoard}>
-            Reiniciar tablero
-          </Button>
+              <div className="buttons">
+                <Row >
+                  <Col sm={12}>
+                    <Button variant="success" onClick={singNumber}>
+                      Cantar número
+                    </Button>
+                    <Button variant="outline-danger" onClick={resetBoard}>
+                      Reiniciar tablero
+                    </Button>
+                  </Col>
+                  <Col>
           <div>
             <input
               type="text"
@@ -250,7 +257,9 @@ const singNumber = () => {
             <Button onClick={() => validarPleno(inputId)} variant="outline-light">
             Validar Pleno
             </Button>
-          </div>
+                    </div>
+                  </Col>
+                </Row>
         </div>
       </div>
       <Board

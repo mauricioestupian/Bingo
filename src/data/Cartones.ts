@@ -374,7 +374,7 @@ export const cartones: Cartones[] = [
     id: "497",
     grid: [
       [ { number: 14, marked: false }, { number: 18, marked: false }, { number: 38, marked: false }, { number: 54, marked: false }, { number: 65, marked: false } ],
-      [ { number: 6, marked: false }, { number: 23, marked: false }, { number: 32, marked: false }, { number: 47, marked: false }, { number: 69, marked: false } ],
+      [ { number: 6, marked: false }, { number: 26, marked: false }, { number: 32, marked: false }, { number: 47, marked: false }, { number: 69, marked: false } ],
       [ { number: 8, marked: false }, { number: 29, marked: false }, { number: 0, marked: true },  { number: 56, marked: false }, { number: 72, marked: false } ],
       [ { number: 13, marked: false }, { number: 21, marked: false }, { number: 43, marked: false }, { number: 57, marked: false }, { number: 73, marked: false } ],
       [ { number: 11, marked: false }, { number: 25, marked: false }, { number: 44, marked: false }, { number: 53, marked: false }, { number: 71, marked: false } ]

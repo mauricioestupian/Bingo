@@ -104,11 +104,12 @@ export function figuraGanadora(card: Cartones): string | null {
   if (diagonal1(card)) return "Macuetazo";
   if (diagonal2(card)) return "Machetazo invertido";
   if (cuatroesquinas(card)) return "Cuatro esquinas";
+  if (cuatroesquinas2(card)) return "Cuatro esquinas interno";
   if (cabezaCola(card)) return "Cabeza y Cola";
   if (cabezaCola2(card)) return "Cabeza y Cola invertido";
   if (cruzinterna(card)) return "Cruz interna";
   if (cruzexterna(card)) return "Cruz externa";
-  if (cuatroesquinas2(card)) return "Cuatro esquinas interno";
+ 
   return null;
 }
 
@@ -153,6 +154,9 @@ export function muestrafiguras(card: Cartones): Set<string> {
   // figuras específicas: usa tus validadores existentes
   if (typeof cuatroesquinas === "function" && cuatroesquinas(card)) {
     [[0,0],[0,size-1],[size-1,0],[size-1,size-1]].forEach(([r,c]) => winners.add(`${r}-${c}`));
+  }
+  if (typeof cuatroesquinas2 === "function" && cuatroesquinas2(card)) {
+    [[1,1],[1,3],[3,1],[3,3]].forEach(([r,c]) => winners.add(`${r}-${c}`));
   }
   if (typeof cabezaCola === "function" && cabezaCola(card)) {
     // ajustar coordenadas si tu función usa otras posiciones
