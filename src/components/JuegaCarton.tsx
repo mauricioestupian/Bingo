@@ -11,12 +11,42 @@ const JuegaCarton:  React.FC<Props> = ({ card: initialCard }) => {
   const handleSelectCard = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedCard = cartones.find(c => c.id === e.target.value);
     if (selectedCard) {
-      setCard(selectedCard);
+      // Hacer una copia profunda y marcar siempre el centro
+      setCard({
+        ...selectedCard,
+        grid: selectedCard.grid.map(row =>
+          row.map(cell =>
+            cell.number === 0 ? { ...cell, marked: true } : { ...cell }
+          )
+        )
+      });
     }
+  };
+
+  const handleCellClick = (rowIndex: number, colIndex: number) => {
+    const cell = card.grid[rowIndex][colIndex];
+    // No permitir cambiar el estado de la celda central (número 0)
+    if (cell.number === 0) return;
+
+    setCard(prevCard => ({
+      ...prevCard,
+      grid: prevCard.grid.map((row, rIdx) =>
+        rIdx === rowIndex
+          ? row.map((cell, cIdx) =>
+              cIdx === colIndex
+                ? { ...cell, marked: !cell.marked }
+                : cell
+            )
+          : row
+      )
+    }));
   };
 
   return (
     <div style={styles.container}>
+      <div className="img-container">
+          <img src="/titulo.png" className="title-image" />
+        </div>
       <div style={styles.selectorContainer}>
         <label htmlFor="carton-select">Selecciona un cartón: </label>
         <select 
@@ -34,16 +64,27 @@ const JuegaCarton:  React.FC<Props> = ({ card: initialCard }) => {
       </div>
       <h3>Cartón {card.id}</h3>
       <table style={styles.table}>
+        <thead>
+          <tr>
+            {['B', 'I', 'N', 'G', 'O'].map((letter) => (
+              <th key={letter} style={styles.header}>
+                {letter}
+              </th>
+            ))}
+          </tr>
+        </thead>
         <tbody>
           {card.grid.map((row, rowIndex) => (
             <tr key={rowIndex}>
               {row.map((cell, colIndex) => (
                 <td
                   key={colIndex}
+                  onClick={() => handleCellClick(rowIndex, colIndex)}
                   style={{
                     ...styles.cell,
                     backgroundColor: cell.marked ? '#4caf50' : '#fff',
                     color: cell.marked ? '#fff' : '#000',
+                    cursor: 'pointer',
                   }}
                 >
                   {cell.number === 0 ? '★' : cell.number}
@@ -65,7 +106,7 @@ const styles = {
   selectorContainer: {
     marginBottom: '1.5rem',
     padding: '1rem',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#D13737',
     borderRadius: '4px',
   },
   select: {
@@ -80,14 +121,25 @@ const styles = {
     borderCollapse: 'collapse' as const,
     margin: '0 auto',
   },
-  cell: {
+  header: {
+    backgroundColor: '#D13737',
+    color: '#fff',
     border: '1px solid #ccc',
     padding: '10px',
-    width: '40px',
+    width: '100px',
     height: '40px',
     textAlign: 'center' as const,
     fontWeight: 'bold' as const,
-    fontSize: '1rem',
+    fontSize: '1.2rem',
+  },
+  cell: {
+    border: '1px solid #ccc',
+    padding: '10px',
+    width: '100px',
+    height: '100px',
+    textAlign: 'center' as const,
+    fontWeight: 'bold' as const,
+    fontSize: '2rem',
   },
 };
 
