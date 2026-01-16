@@ -100,14 +100,20 @@ const JuegaCarton:  React.FC<Props> = ({ card: initialCard }) => {
 
 const styles = {
   container: {
-    marginTop: '1rem',
     textAlign: 'center' as const,
+    marginTop: '2rem',
+    paddingTop: '0',
+    minHeight: '100vh',
   },
   selectorContainer: {
-    marginBottom: '1.5rem',
+    withd: 'fit-content',
+    margin: '2rem',
+    marginleft: 'auto',
+    marginRight: 'auto',
+    display: 'inline-block',
     padding: '1rem',
-    backgroundColor: '#D13737',
-    borderRadius: '4px',
+    backgroundColor: '#62DDE3',
+    borderRadius: '8px',
   },
   select: {
     marginLeft: '0.5rem',
@@ -122,7 +128,7 @@ const styles = {
     margin: '0 auto',
   },
   header: {
-    backgroundColor: '#D13737',
+    backgroundColor: '#72D137',
     color: '#fff',
     border: '1px solid #ccc',
     padding: '10px',
@@ -135,11 +141,12 @@ const styles = {
   cell: {
     border: '1px solid #ccc',
     padding: '10px',
-    width: '100px',
-    height: '100px',
+    margin: '25px',
+    width: '120px',
+    height: '120px',
     textAlign: 'center' as const,
     fontWeight: 'bold' as const,
-    fontSize: '2rem',
+    fontSize: '4rem',
   },
 };
 
