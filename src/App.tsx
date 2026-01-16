@@ -225,7 +225,6 @@ const singNumber = () => {
     <Container>
       <div className="grid-container">
         <div className="arbol">
-         <img src="https://cdn.pixabay.com/animation/2023/03/12/13/46/13-46-48-414_512.gif" className="tree-image" />
         </div>
         <div className="img-container">
           <img src="/titulo.png" className="title-image" />

@@ -33,7 +33,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: thistle;
 }
 
 .arbol img {
@@ -244,7 +243,7 @@ p {
 
 .grid-container {
   display: grid;
-  grid-template-columns: 2fr 5fr 2fr; /* 3 columnas iguales */
+  grid-template-columns: 2fr 5fr; /* 3 columnas iguales */
   gap: 1rem;
 }
 @media (max-width: 768px) {
