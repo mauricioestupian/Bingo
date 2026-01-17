@@ -11,12 +11,28 @@ const TableroJugadas: React.FC = () => {
   const [lastNumber, setLastNumber] = useState<string | number | null>(null);
 
   useEffect(() => {
-    // Escuchar cambios en localStorage
-    const handleStorageChange = () => {
-      const data = localStorage.getItem('bingoGameData');
-      if (data) {
-        try {
+    // Función para cargar datos del localStorage
+    const loadGameData = () => {
+      try {
+        const data = localStorage.getItem('bingoGameData');
+        if (data) {
           const parsed: PlayedNumbersData = JSON.parse(data);
+          setPlayedNumbers(parsed.playedNumbers);
+          setLastNumber(parsed.lastNumber);
+        }
+      } catch (error) {
+        console.error('Error parsing bingo game data:', error);
+      }
+    };
+
+    // Cargar datos iniciales
+    loadGameData();
+
+    // Escuchar cambios en localStorage en otras pestañas
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'bingoGameData' && e.newValue) {
+        try {
+          const parsed: PlayedNumbersData = JSON.parse(e.newValue);
           setPlayedNumbers(parsed.playedNumbers);
           setLastNumber(parsed.lastNumber);
         } catch (error) {
@@ -25,14 +41,16 @@ const TableroJugadas: React.FC = () => {
       }
     };
 
-    // Escuchar en el mismo tab
     window.addEventListener('storage', handleStorageChange);
 
-    // Cargar datos iniciales
-    handleStorageChange();
+    // Polling cada 1 segundo para asegurar que se actualice (funciona mejor en producción)
+    const interval = setInterval(loadGameData, 1000);
 
-    // Limpiar listener
-    return () => window.removeEventListener('storage', handleStorageChange);
+    // Limpiar listeners
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
   }, []);
 
   const rows = [

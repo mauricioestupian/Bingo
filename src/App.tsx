@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -98,16 +98,15 @@ const singNumber = () => {
 
     // Guardar en historial
     setPlayedNumbers(prev => [...prev, random]);
-};
 
-  // Guardar datos del juego en localStorage para compartir entre pestañas
-  useEffect(() => {
-    const gameData = {
-      playedNumbers,
-      lastNumber
-    };
-    localStorage.setItem('bingoGameData', JSON.stringify(gameData));
-  }, [playedNumbers, lastNumber]);  
+    // Guardar inmediatamente en localStorage
+    const updatedPlayedNumbers = [...playedNumbers, random];
+    localStorage.setItem('bingoGameData', JSON.stringify({
+      playedNumbers: updatedPlayedNumbers,
+      lastNumber: fullValue
+    }));
+
+};  
   
   function validateFigures() {
     const results: string[] = [];
