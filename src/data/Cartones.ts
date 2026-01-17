@@ -209,6 +209,16 @@ export const cartones: Cartones[] = [
       [ { number: 5, marked: false }, { number: 20, marked: false }, { number: 37, marked: false }, { number: 54, marked: false }, { number: 72, marked: false } ]
     ]
   }, 
+   {
+    id: "131",
+    grid: [
+      [ { number: 14, marked: false }, { number: 19, marked: false }, { number: 45, marked: false }, { number: 51, marked: false }, { number: 61, marked: false } ],
+      [ { number: 11, marked: false }, { number: 16, marked: false }, { number: 35, marked: false }, { number: 46, marked: false }, { number: 68, marked: false } ],
+      [ { number: 5, marked: false }, { number: 26, marked: false }, { number: 0, marked: true },  { number: 48, marked: false }, { number: 73, marked: false } ],
+      [ { number: 7, marked: false }, { number: 20, marked: false }, { number: 40, marked: false }, { number: 53, marked: false }, { number: 62, marked: false } ],
+      [ { number: 2, marked: false }, { number: 28, marked: false }, { number: 31, marked: false }, { number: 50, marked: false }, { number: 65, marked: false } ]
+    ]
+  }, 
   //Cartones Rojos
   {
     id: "481",

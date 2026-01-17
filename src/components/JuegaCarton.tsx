@@ -48,7 +48,7 @@ const JuegaCarton:  React.FC<Props> = ({ card: initialCard }) => {
           <img src="/titulo.png" className="title-image" />
         </div>
       <div style={styles.selectorContainer}>
-        <label htmlFor="carton-select">Selecciona un cartón: </label>
+        <label htmlFor="carton-select" style={styles.label}>Selecciona un cartón: </label>
         <select 
           id="carton-select"
           value={card.id} 
@@ -118,10 +118,15 @@ const styles = {
   select: {
     marginLeft: '0.5rem',
     padding: '0.5rem',
-    fontSize: '1rem',
+    fontSize: '2rem',
     borderRadius: '4px',
     border: '1px solid #ccc',
     cursor: 'pointer',
+  },
+  label: {
+    fontSize: '2rem',
+    fontWeight: 'bold' as const,
+    color: '#2C3029',
   },
   table: {
     borderCollapse: 'collapse' as const,
@@ -142,8 +147,8 @@ const styles = {
     border: '1px solid #ccc',
     padding: '10px',
     margin: '25px',
-    width: '120px',
-    height: '120px',
+    width: '140px',
+    height: '140px',
     textAlign: 'center' as const,
     fontWeight: 'bold' as const,
     fontSize: '4rem',

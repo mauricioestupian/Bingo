@@ -158,6 +158,28 @@ body {
   text-align: center;
 }
 
+.bingo-ball-2 {
+  display: inline-flex;
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-radius: 50%;
+  background-color: #fdd835;
+  color: #333;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  animation: popIn 0.6s ease-out;
+  margin: 1rem;
+  text-align: center;
+}
+
+.title-image-2 {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  margin: 0 auto 20px auto;
+  display: block;
+}
+
 @keyframes popIn {
   0% {
     transform: scale(0.5);
@@ -242,6 +264,12 @@ p {
 }
 
 .grid-container {
+  display: grid;
+  grid-template-columns: 2fr 5fr; /* 3 columnas iguales */
+  gap: 1rem;
+}
+
+.grid-container-2 {
   display: grid;
   grid-template-columns: 2fr 5fr; /* 3 columnas iguales */
   gap: 1rem;

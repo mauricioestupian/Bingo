@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -11,6 +11,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import JuegaCarton from "./components/JuegaCarton";
 import Modal from "./components/Modal";
+import TableroJugadas from "./components/TableroJugadas";
 import { Cartones, cartones } from './data/Cartones';
 import "./img/arbol.webp";
 import "./img/titulo.png";
@@ -97,8 +98,16 @@ const singNumber = () => {
 
     // Guardar en historial
     setPlayedNumbers(prev => [...prev, random]);
+};
 
-};  
+  // Guardar datos del juego en localStorage para compartir entre pestañas
+  useEffect(() => {
+    const gameData = {
+      playedNumbers,
+      lastNumber
+    };
+    localStorage.setItem('bingoGameData', JSON.stringify(gameData));
+  }, [playedNumbers, lastNumber]);  
   
   function validateFigures() {
     const results: string[] = [];
@@ -331,6 +340,7 @@ const singNumber = () => {
           </Container>
         } />
          <Route path="/carton" element={<JuegaCarton />} />
+         <Route path="/tablero-jugadas" element={<TableroJugadas />} />
         </Routes>
       </BrowserRouter>
   );
