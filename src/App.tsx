@@ -6,13 +6,16 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
+import { createPortal } from "react-dom";
 import QRCode from "react-qr-code";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import JuegaCarton from "./components/JuegaCarton";
 import Modal from "./components/Modal";
 import TableroJugadas from "./components/TableroJugadas";
+import { ModalProvider, useModals } from "./context/ModalContext";
 import { Cartones, cartones } from './data/Cartones';
+import { crearCartonesEjemplo } from './data/cartonesFiguras';
 import "./img/arbol.webp";
 import "./img/titulo.png";
 import { figuraGanadora, marcaNumeros, pleno } from "./logic/bingoValidar";
@@ -29,29 +32,23 @@ function tableroGeneral(number:number) {
   return "";
 }
 
-function App() {
+function AppContent() {
+  const { showFiguras, setShowFiguras, indiceFigura, setIndiceFigura, modalMessage, setModalMessage, modalMessageColor, setModalMessageColor, modalMode, setModalMode } = useModals();
   const [inputId, setInputId] = useState<string>("");
   const [playedNumbers, setPlayedNumbers] = useState<number[]>([]);
   const [cards, setCards] = useState<Cartones[]>(() => [...cartones]);
-  const [modalMessage, mensajeModal] = useState<string | null>(null);
-  const [modalMessageColor, setModalMessageColor] = useState<string>(""); // <-- nuevo
   const [selectedCard, cartonSeleccionado] = useState<Cartones | null>(null);
 
   const [valor1, setValor1] = useState("");
   const [valor2, setValor2] = useState("");
 
-  //const handleChange1 = (e) => setValor1(e.target.value);
-  //const handleChange2 = (e) => setValor2(e.target.value);
   const handleChange1 = (e: React.ChangeEvent<HTMLInputElement>) => setValor1(e.target.value);
-const handleChange2 = (e: React.ChangeEvent<HTMLInputElement>) => setValor2(e.target.value);
+  const handleChange2 = (e: React.ChangeEvent<HTMLInputElement>) => setValor2(e.target.value);
 
   const resultado = (parseFloat(valor1) || 0) * (parseFloat(valor2) || 0);
 
-  //const [calledNumbers, setCalledNumbers] = useState(new Set());
   const [calledNumbers, setCalledNumbers] = useState<Set<number>>(new Set<number>());
-  //const [lastNumber, setLastNumber] = useState<number | null>(null);
   const [lastNumber, setLastNumber] = useState<string | number | null>(null);
-  const [modalMode, setModalMode] = useState<"figuras" | "pleno">("figuras");
 
   const [showQR, setShowQR] = useState(false);
   //https://bingo-eight-liart.vercel.app/
@@ -119,16 +116,16 @@ const singNumber = () => {
     });
 
     if (results.length > 0) {
-      mensajeModal(results.join('\n'));
+      setModalMessage(results.join('\n'));
     } else {
-      mensajeModal('Ningún cartón ha completado una figura aún.');
+      setModalMessage('Ningún cartón ha completado una figura aún.');
     }
   }
   
   function validarCarton(cardId: string) {
     const card = cards.find(c => c.id === cardId);
     if (!card) {
-      mensajeModal(`❌ No se encontró el cartón con ID ${cardId}`);
+      setModalMessage(`❌ No se encontró el cartón con ID ${cardId}`);
       setModalMessageColor("red");
       cartonSeleccionado(null);
       return;
@@ -136,29 +133,23 @@ const singNumber = () => {
 
     const figure = figuraGanadora(card);
     if (figure) {
-      mensajeModal(`🎉 El cartón ${cardId} ha completado la figura: ${figure}`);
+      setModalMessage(`🎉 El cartón ${cardId} ha completado la figura: ${figure}`);
       setModalMessageColor("Black");
       setModalMode("figuras"); 
     } else {
-      mensajeModal(`El cartón ${cardId} no ha completado ninguna figura aún.`);
+      setModalMessage(`El cartón ${cardId} no ha completado ninguna figura aún.`);
       setModalMessageColor("red");
       setModalMode("figuras"); 
     }
 
-    // Clonar el cartón y forzar que la casilla central [2][2] muestre el valor captado (cardId)
     const cardCopy: Cartones = {
       ...card,
       grid: card.grid.map((row) => row.map(cell => ({ ...cell })))
     };
 
-    // Si quieres mostrar el id (string) como número intenta parsearlo, si no, dejar el número original
     const parsed = Number(cardId);
     cardCopy.grid[2][2].number = Number.isFinite(parsed) && parsed !== 0 ? parsed : cardCopy.grid[2][2].number;
 
-    // Si prefieres mostrar el id como texto (no número), convierte a string y ajusta render del modal
-    // cardCopy.grid[2][2].number = parsed || cardCopy.grid[2][2].number;
-
-    // pasar el cartón modificado al modal
     cartonSeleccionado(cardCopy);
   }
 
@@ -166,7 +157,7 @@ const singNumber = () => {
   const card = cards.find(c => c.id === cardId);
 
   if (!card) {
-    mensajeModal(`❌ No se encontró el cartón con ID ${cardId}`);
+    setModalMessage(`❌ No se encontró el cartón con ID ${cardId}`);
     setModalMessageColor("red");
     cartonSeleccionado(null);
     setModalMode("pleno");
@@ -176,16 +167,15 @@ const singNumber = () => {
   const isPleno = typeof pleno === "function" && pleno(card);
 
   if (isPleno) {
-    mensajeModal(`🎉 El cartón ${cardId} ha completado: Pleno`);
+    setModalMessage(`🎉 El cartón ${cardId} ha completado: Pleno`);
     setModalMessageColor("black");
     setModalMode("pleno");
   } else {
-    mensajeModal(`El cartón ${cardId} no ha completado pleno aún.`);
+    setModalMessage(`El cartón ${cardId} no ha completado pleno aún.`);
     setModalMessageColor("red");
     setModalMode("pleno");
-    }
+  }
     
-    // Clonar el cartón y modificar la celda central como en validarCarton
   const cardCopy: Cartones = {
     ...card,
     grid: card.grid.map((row) => row.map(cell => ({ ...cell })))
@@ -195,8 +185,6 @@ const singNumber = () => {
   cardCopy.grid[2][2].number = Number.isFinite(parsed) && parsed !== 0 ? parsed : cardCopy.grid[2][2].number;
 
   cartonSeleccionado(cardCopy);
-
-
   }
   
   function resetGame() {
@@ -213,7 +201,7 @@ const singNumber = () => {
 
   setCards(freshCards);
   setPlayedNumbers([]);
-  mensajeModal(null);
+  setModalMessage(null);
   cartonSeleccionado(null);
 }
   
@@ -227,121 +215,118 @@ const singNumber = () => {
 
   
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={
-    <Container>
-      <div className="grid-container">
-        <div className="arbol">
-        </div>
-        <div className="img-container">
-          <img src="/titulo.png" className="title-image" />
-        </div>
-        <div className="BingoBallContainer">
-          <BingoBall value={lastNumber} />
-        </div>
-              <div className="buttons">
-                <Row >
-                  <Col sm={12}>
-                    <Button variant="success" onClick={singNumber}>
-                      Cantar número
-                    </Button>
-                    <Button variant="outline-danger" onClick={resetBoard}>
-                      Reiniciar tablero
-                    </Button>
-                  </Col>
-                  <Col>
-          <div>
-            <input
-              type="text"
-              placeholder="# cartón"
-              value={inputId}
-              onChange={e => setInputId(e.target.value)}
-            />
-            <Button onClick={() => validarCarton(inputId)} variant="outline-light">
-            Validar Figura
-            </Button>
-            <Button onClick={() => validarPleno(inputId)} variant="outline-light">
-            Validar Pleno
-            </Button>
-                    </div>
-                  </Col>
-                </Row>
-        </div>
-      </div>
-      <Board
-        calledNumbers={calledNumbers}
-        setCalledNumbers={setCalledNumbers}
-      />
-      <div>
-        <Row className="justify-content-md-center">
-          <Col xs lg="3">
-            <InputGroup className="mb-3">
-              <InputGroup.Text># Cartones</InputGroup.Text>
-              <Form.Control
-                aria-label="First name"
-                type="number"
-                value={valor1}
-                onChange={handleChange1}
+    <>
+      <Container>
+        <div className="grid-container">
+          <div className="arbol">
+          </div>
+          <div className="img-container">
+            <img src="/titulo.png" className="title-image" />
+          </div>
+          <div className="BingoBallContainer">
+            <BingoBall value={lastNumber} />
+          </div>
+                <div className="buttons">
+                  <Row >
+                    <Col sm={12}>
+                      <Button variant="success" onClick={singNumber}>
+                        Cantar número
+                      </Button>
+                      <Button variant="outline-danger" onClick={resetBoard}>
+                        Reiniciar tablero
+                      </Button>
+                      <Button variant="info" onClick={() => setShowFiguras(true)}>
+                        Ver Figuras
+                      </Button>
+                    </Col>
+                    <Col>
+            <div>
+              <input
+                type="text"
+                placeholder="# cartón"
+                value={inputId}
+                onChange={e => setInputId(e.target.value)}
               />
-            </InputGroup>
-          </Col>
-          <Col md="auto">
-            <p>
-              Total: <strong>{resultado}</strong>
-            </p>
-          </Col>
-          <Col xs lg="3">
-            <InputGroup className="mb-3">
-              <InputGroup.Text>Valor Apostado</InputGroup.Text>
-              <Form.Control
-                type="number"
-                aria-label="First name"
-                value={valor2}
-                onChange={handleChange2}
-              />
-            </InputGroup>
-          </Col>
-        </Row>
-      </div>
-      <div>
-      <h1>Bingo</h1>
-      <button onClick={validateFigures}>Validar figuras</button>
+              <Button onClick={() => validarCarton(inputId)} variant="outline-light">
+              Validar Figura
+              </Button>
+              <Button onClick={() => validarPleno(inputId)} variant="outline-light">
+              Validar Pleno
+              </Button>
+                      </div>
+                    </Col>
+                  </Row>
+          </div>
+        </div>
+        <Board
+          calledNumbers={calledNumbers}
+          setCalledNumbers={setCalledNumbers}
+        />
+        <div>
+          <Row className="justify-content-md-center">
+            <Col xs lg="3">
+              <InputGroup className="mb-3">
+                <InputGroup.Text># Cartones</InputGroup.Text>
+                <Form.Control
+                  aria-label="First name"
+                  type="number"
+                  value={valor1}
+                  onChange={handleChange1}
+                />
+              </InputGroup>
+            </Col>
+            <Col md="auto">
+              <p>
+                Total: <strong>{resultado}</strong>
+              </p>
+            </Col>
+            <Col xs lg="3">
+              <InputGroup className="mb-3">
+                <InputGroup.Text>Valor Apostado</InputGroup.Text>
+                <Form.Control
+                  type="number"
+                  aria-label="First name"
+                  value={valor2}
+                  onChange={handleChange2}
+                />
+              </InputGroup>
+            </Col>
+          </Row>
+        </div>
+        <div>
+        <h1>Bingo</h1>
+        <button onClick={validateFigures}>Validar figuras</button>
 
-      {modalMessage && (
-        <Modal
-        message={modalMessage}
-        onClose={() => {
-          mensajeModal(null);
-          cartonSeleccionado(null);
-          setModalMessageColor("");
-        }}
-                  card={selectedCard}
-                  color={modalMessageColor}
-                   modo={modalMode}// <-- pasar color al modal
-      />
-      )}
+        {modalMessage && (
+          <Modal
+          message={modalMessage}
+          onClose={() => {
+            setModalMessage(null);
+            cartonSeleccionado(null);
+            setModalMessageColor("");
+          }}
+                    card={selectedCard}
+                    color={modalMessageColor}
+                     modo={modalMode}// <-- pasar color al modal
+        />
+        )}
 
-      </div>
-       <div style={{ textAlign: "center", marginTop: "40px" }}>
-      <h1>Generador de Cartón de Bingo</h1>
-      <button onClick={() => setShowQR((prev) => !prev)}>
-        {showQR ? "Ocultar QR" : "Generar QR para un nuevo cartón"}
-      </button>
-      {showQR && (
-  <div style={{ margin: "30px auto" }}>
-    <QRCode value={cartonUrl} size={256} />
-    <p>Escanea este código QR en otro dispositivo para obtener un cartón nuevo.</p>
-  </div>
-)}
+        </div>
+         <div style={{ textAlign: "center", marginTop: "40px" }}>
+        <h1>Generador de Cartón de Bingo</h1>
+        <button onClick={() => setShowQR((prev) => !prev)}>
+          {showQR ? "Ocultar QR" : "Generar QR para un nuevo cartón"}
+        </button>
+        {showQR && (
+    <div style={{ margin: "30px auto" }}>
+      <QRCode value={cartonUrl} size={256} />
+      <p>Escanea este código QR en otro dispositivo para obtener un cartón nuevo.</p>
     </div>
+  )}
+      </div>
 
-          </Container>
-        } />
-         <Route path="/carton" element={<JuegaCarton />} />
-         <Route path="/tablero-jugadas" element={<TableroJugadas />} />
-        </Routes>
-      </BrowserRouter>
+      </Container>
+    </>
   );
 }
 
@@ -399,6 +384,128 @@ function Board({
       ))}
     </div>
   );
+}
+
+function App() {
+  return (
+    <ModalProvider>
+      <>
+        <BrowserRouter>
+          <AppContentWithRoutes />
+        </BrowserRouter>
+        <ModalGlobalWrapper />
+      </>
+    </ModalProvider>
+  );
+}
+
+function AppContentWithRoutes() {
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<AppContent />} />
+        <Route path="/carton" element={<JuegaCarton />} />
+        <Route path="/tablero-jugadas" element={<TableroJugadas />} />
+      </Routes>
+    </>
+  );
+}
+
+function ModalGlobalWrapper() {
+  const { showFiguras, setShowFiguras, indiceFigura, setIndiceFigura } = useModals();
+
+  // Lista de figuras disponibles
+  const figurasDisponibles = [
+    "Raya horizontal",
+    "Raya vertical",
+    "Machetazo",
+    "Machetazo invertido",
+    "Cuatro esquinas",
+    "Cuatro esquinas interno",
+    "Cabeza y Cola",
+    "Cabeza y Cola invertido",
+    "Cruz Externa",
+    "Cruz Interna",
+    "Pleno"
+  ];
+
+  const modalContent = (
+    <>
+      {showFiguras && (
+        <>
+          <div className="modal-overlay" role="dialog" aria-modal="true" onClick={() => setShowFiguras(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-message" style={{ color: "black", textAlign: "center", marginBottom: 8 }}>
+                <strong>{figurasDisponibles[indiceFigura]} </strong>
+              </div>
+
+              {crearCartonesEjemplo()[indiceFigura] && (
+                <table className="card-table modal-card" aria-hidden={false}>
+                  <tbody>
+                    {crearCartonesEjemplo()[indiceFigura].grid.map((row, r) => (
+                      <tr key={r}>
+                        {row.map((cell, c) => {
+                          const key = `${r}-${c}`;
+                          const isMarked = cell.marked;
+                          const isCenter = r === 2 && c === 2;
+                          const classes = [
+                            isMarked ? "winner" : "",
+                            isCenter ? "center-cell" : ""
+                          ].join(" ").trim();
+                          return (
+                            <td key={key} className={classes}>
+                              {cell.number}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+
+              {/* Botones de navegación */}
+              <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", margin: "12px 0" }}>
+                <button
+                  className="btn btn-primary"
+                  onClick={() =>
+                    setIndiceFigura(
+                      (prev: number) =>
+                        (prev - 1 + crearCartonesEjemplo().length) %
+                        crearCartonesEjemplo().length
+                    )
+                  }
+                >
+                  ← Anterior
+                </button>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    setShowFiguras(false);
+                    setIndiceFigura(0);
+                  }}
+                >
+                  Cerrar
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() =>
+                    setIndiceFigura(
+                      (prev: number) => (prev + 1) % crearCartonesEjemplo().length
+                    )
+                  }
+                >
+                  Siguiente →
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+
+  return createPortal(modalContent, document.body);
 }
 
 export default App;

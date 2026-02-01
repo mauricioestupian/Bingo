@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../App.css';
+import { useModals } from '../context/ModalContext';
+import Modal from './Modal';
 
 type PlayedNumbersData = {
   playedNumbers: number[];
@@ -9,6 +11,9 @@ type PlayedNumbersData = {
 const TableroJugadas: React.FC = () => {
   const [playedNumbers, setPlayedNumbers] = useState<number[]>([]);
   const [lastNumber, setLastNumber] = useState<string | number | null>(null);
+  
+  // Usar el contexto para los modales compartidos
+  const { showFiguras, setShowFiguras, indiceFigura, setIndiceFigura, modalMessage, setModalMessage, modalMessageColor, setModalMessageColor, modalMode } = useModals();
 
   useEffect(() => {
     // Función para cargar datos del localStorage
@@ -43,7 +48,7 @@ const TableroJugadas: React.FC = () => {
 
     window.addEventListener('storage', handleStorageChange);
 
-    // Polling cada 1 segundo para asegurar que se actualice (funciona mejor en producción)
+    // Polling cada 1 segundo para asegurar que se actualice
     const interval = setInterval(loadGameData, 1000);
 
     // Limpiar listeners
@@ -52,6 +57,7 @@ const TableroJugadas: React.FC = () => {
       clearInterval(interval);
     };
   }, []);
+
 
   const rows = [
     { letter: 'B', range: [1, 15] as [number, number] },
@@ -62,15 +68,17 @@ const TableroJugadas: React.FC = () => {
   ];
 
   return (
-      <div style={styles.pageContainer}>
-                <img src="/titulo.png" className="title-image-2" />
-            
-            <div style={styles.lastNumberContainer}><h1 style={styles.title}>Tablero de Balotas Jugadas</h1>
-              <div style={styles.lastNumberLabel}>Último número:  
-                  <div className="bingo-ball-2">{lastNumber !== null ? lastNumber : 'N/A'}</div>;
-                </div>
-               
-            </div>
+    <div style={styles.pageContainer}>
+      <img src="/titulo.png" className="title-image-2" />
+      
+      <div style={styles.lastNumberContainer}>
+        <h1 style={styles.title}>Tablero de Balotas Jugadas</h1>
+        <div style={styles.lastNumberLabel}>
+          Último número:  
+          <div className="bingo-ball-2">{lastNumber !== null ? lastNumber : 'N/A'}</div>
+        </div>
+      </div>
+
       <div className="board">
         {rows.map((row) => (
           <div key={row.letter} className="row">
@@ -94,6 +102,20 @@ const TableroJugadas: React.FC = () => {
       <div style={styles.statsContainer}>
         <p style={styles.stats}>Balotas jugadas: <strong>{playedNumbers.length}</strong> / 75</p>
       </div>
+
+      {/* Modal de validación */}
+      {modalMessage && (
+        <Modal
+          message={modalMessage}
+          onClose={() => {
+            setModalMessage(null);
+            setModalMessageColor("");
+          }}
+          card={null}
+          color={modalMessageColor}
+          modo={modalMode}
+        />
+      )}
     </div>
   );
 };
@@ -116,6 +138,17 @@ const styles = {
     fontSize: '1.5rem',
     color: '#b0b0b0',
     marginBottom: '0.5rem',
+  },
+  buttonVerFiguras: {
+    marginTop: '1rem',
+    padding: '0.7rem 1.5rem',
+    fontSize: '1.2rem',
+    borderRadius: '4px',
+    border: 'none',
+    backgroundColor: '#FF6B6B',
+    color: '#fff',
+    cursor: 'pointer',
+    fontWeight: 'bold' as const,
   },
   statsContainer: {
     backgroundColor: '#1e1e1e',
